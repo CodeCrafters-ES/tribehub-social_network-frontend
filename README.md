@@ -1,20 +1,20 @@
 # 🚀 Proyecto de red social (Social Network WebApp) - Frontend Team
 
-## Bienvenido/a al repositorio del proyecto **Social Network** en el que colabora el equipo **Frontend**.  
+## Bienvenido/a al repositorio del proyecto **Social Network** en el que colabora el equipo **Frontend**
 
 Este proyecto usa **Vite**, **React**, **HTML** y **TailwindCSS** como base para un desarrollo rápido, modular y escalable.
 
 ---
 
 [![Licencia](https://img.shields.io/badge/licencia-MIT-blue)](LICENSE)
-[![Vite](https://img.shields.io/badge/vite-%5E4.0.0-orange)](https://vitejs.dev/)
-[![React](https://img.shields.io/badge/react-%5E18.2.0-blue)](https://react.dev/)
+[![Vite](https://img.shields.io/badge/vite-%5E7.0.4-orange)](https://vitejs.dev/)
+[![React](https://img.shields.io/badge/react-%5E22.17.0-blue)](https://react.dev/)
 [![Tailwind CSS](https://img.shields.io/badge/tailwindcss-%5E3.3.0-06B6D4)](https://tailwindcss.com/)
 
 Aplicación web de una red social moderna construida con **Vite**, **React** y **Tailwind CSS**.
 Incluye funcionalidades como autenticación, publicaciones, comentarios y perfiles de usuario.
 
-![Captura de Pantalla](./src/assets/screenshot.png) <!-- Reemplazar con imagen real -->
+<!-- ![Captura de Pantalla](./src/assets/screenshot.png)  <!-- Reemplazar con imagen real -->
 
 ---
 
@@ -23,10 +23,10 @@ Incluye funcionalidades como autenticación, publicaciones, comentarios y perfil
 
 ---
 
-## 🔹 **Funcionalidades clave**:
+## 🔹 **Funcionalidades clave**
 
 - Publica fotos, textos y enlaces.  
-- Conecta con amigos. 
+- Conecta con amigos.
 - Descubre comunidades temáticas.  
 
 ---
@@ -76,6 +76,7 @@ git clone https://github.com/CodeCrafters-ES/social-network-webapp-frontend.git
 ## 🆘 Soporte Técnico
 
 ¿Problemas al acceder?  
+
 - Verifica tu conexión a Internet.
 - Limpia la caché del navegador.  
 - Contáctanos <!--en [soporte@turedsocial.com](mailto:soporte@turedsocial.com). -->
@@ -85,4 +86,4 @@ git clone https://github.com/CodeCrafters-ES/social-network-webapp-frontend.git
 ## 📜 Licencia
 
 Este proyecto es de código abierto bajo licencia [MIT](LICENSE).  
-© 2025 CodeCrafters - ES.
+© 2025 CodeCrafters - ES
