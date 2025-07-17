@@ -57,26 +57,6 @@ Descripción: Crear la interfaz visual de los formularios (login y registro) res
 
 - Los errores se muestran sin recargar la página.
 
-### 3. Integración con API de autenticación
-
-**Descripción:** Conectar los formularios con el backend.
-
-**Tareas:**
-
-- Configurar llamadas HTTP (usando axios o fetch) a los endpoints:
-
-- POST /api/auth/login
-
-- POST /api/auth/register
-
-- Manejar respuestas de éxito/error (ej: redirigir a home tras login exitoso).
-
-- Guardar token JWT en localStorage o cookies.
-
-**Criterios de Aceptación:**
-
-- Flujo completo funcional (registro → login → acceso a rutas privadas).
-
 ---
 
 ## 🗂️ Issues relacionados
