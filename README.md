@@ -42,7 +42,7 @@ Para conocer las pautas detalladas de contribución, consulta el archivo [CONTRI
 
 ### Opción 1: Acceder Online (Recomendado)
 
-Simplemente visita **[https://turedsocial.com](https://turedsocial.com)** en tu navegador (Chrome, Firefox o Edge).  
+Simplemente visita **[https://tribehub.com](https://tribehub.com)** en tu navegador (Chrome, Firefox o Edge).  
 
 ### Opción 2: Ejecutar Localmente (Para Testing)
 

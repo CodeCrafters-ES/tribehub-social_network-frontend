@@ -1,6 +1,7 @@
 # 🤝 Guía de Contribución
 
-### ¡Gracias por tu interés en contribuir a este proyecto! 🎉  
+### ¡Gracias por tu interés en contribuir a este proyecto! 🎉
+
 Este documento explica cómo colaborar de forma clara, segura y ordenada.
 
 ---
@@ -8,6 +9,7 @@ Este documento explica cómo colaborar de forma clara, segura y ordenada.
 ## 📌 Requisitos Previos
 
 Asegúrate de tener instalado:
+
 - Node.js >= 18.x
 - npm >= 9.x (o yarn/pnpm)
 
@@ -30,7 +32,6 @@ Haz clic en **Fork** en la parte superior derecha para crear tu copia del reposi
 ```bash
 # Clona TU fork (reemplaza <TU_USUARIO> y <TU_REPOSITORIO>)
 git clone https://github.com/<TU_USUARIO>/<TU_REPOSITORIO>.git
-
 ```
 
 #### Entra a la carpeta del proyecto
@@ -62,32 +63,74 @@ Abre <http://localhost:5173> para ver la aplicación en tu navegador.
 ## 📁 Estructura de Carpetas
 
 ```bash
+/tribehub-socialnetwork-app
 ├── public/
+│   └── assets/                # Imágenes públicas (logo, favicon, etc.)
 ├── src/
+│   ├── main.jsx o index.jsx      # Punto de entrada de la app (renderiza App.jsx)
+│   ├── App.jsx                   # Componente raíz (rutas principales)
+│   ├── App.css                   # Estilos globales
+│   └── index.css
+
 │   ├── assets/
-│   ├── components/
-│   ├── features/
-│       ├── auth/
-│       ├── dashboard/
-│   ├── pages/
-│       ├── HomePage/
-│           ├── index.jsx/
-│       ├── LandingPage/
-│           ├── index.jsx/
-│       ├── NotFoundPage/
-│           ├── index.jsx/
-│   ├── hooks/
-│   ├── context/
-│   ├── services/
-│   ├── utils/
-│   ├── styles/
-│   ├── App.jsx
-│   ├── main.jsx
-├── index.html
-├── tailwind.config.js
-├── postcss.config.js
-├── package.json
-└── .gitignore
+│   ├── components/               # Componentes reutilizables (UI)
+│   │   ├── layout/
+│   │   │   │   ├── Header.jsx
+│   │   │   │   ├── Footer.jsx
+│   │   ├── ui/                # Componentes genéricos (buttons, cards, modals)
+│   │   │   │   ├── BtnCta.jsx
+│   │   ├── landing/
+│   │   │   │   ├── Hero.jsx
+│   │   │   │   ├── LoginForm.jsx
+│   │   │   │   ├── SignupForm.jsx
+│   │   ├── feed/
+│   │   │   ├── Post.jsx       # Componente de publicación individual
+│   │   │   ├── Comment.jsx    # Componente de comentario
+│   │   │   └── CreatePost.jsx # Formulario para crear/editar posts
+│   │   └── profile/
+│   │       ├── UserInfo.jsx   # Info básica del usuario (foto, nombre, bio)
+│   │       └── UserPosts.jsx  # Lista de posts del usuario
+
+│   ├── pages/                    # Páginas/rutas (ej. Home, Profile)
+│   │   ├── LandingPage.jsx
+│   │   ├── SignupPage.jsx
+│   │   ├── MainFeedPage.jsx
+│   │   ├── ProfilePage.jsx
+│   │   └── NotFoundPage.jsx      # Página 404
+
+│   ├── features/                 # Lógica organizada por funcionalidades (recomendado)
+│   │   ├── auth/                 # Autenticación (hooks, context, servicios)
+│   │   │   ├── AuthProvider.jsx  # Proveedor de contexto de autenticación
+│   │   │   └── authSlice.js      # Lógica de autenticación (Redux o Zustand)
+│   │   ├── posts/                # Lógica de publicaciones
+│   │   │   ├── postsApi.js       # Llamadas API para posts (create, delete, like)
+│   │   │   └── postsSlice.js     # Estado global de posts
+│   │   ├── users/                # Perfiles y amigos
+│   │   │   ├── usersApi.js       # Llamadas API para perfiles
+│   │   │   └── usersSlice.js     # Estado global de usuarios
+│   │   └── comments/
+│   │   │   ├── commentsApi.js    # Llamadas API para comentarios
+│   │   │   └── commentsSlice.js  # Estado global de comentarios
+│   │   └── notifications/        # Notificaciones
+
+│   ├── hooks/                   # Custom Hooks (ej. useAuth, usePosts)
+│   │   ├── useAuth.js           # Custom hook para autenticación
+│   │   ├── usePosts.js          # Hook para manejar posts
+│   │   └── useComments.js       # Hook para manejar comentarios
+│   ├── services/                # Llamadas a APIs (axios, firebase)
+│   │   ├── api.js               # Configuración de Axios (baseURL, interceptores)
+│   │   └── auth.js              # Funciones de Firebase/Auth0/JWT
+│   ├── contexts/                # Contextos de React (para estado global)
+│   │   └── AuthContext.jsx      # Contexto para autenticación (user, login, logout)
+│   ├── utils/                   # Funciones helpers (formateadores, validaciones)
+│   │   ├── validators.js        # Validaciones de formularios
+│   │   └── formatDate.js        # Formatear fechas (ej: "Hace 2 horas")
+│   ├── routes/                  # Configuración de rutas (React Router)
+│   │   ├── AppRouter.jsx        # Define todas las rutas
+│   │   └── PrivateRoute.jsx     # Ruta protegida (solo para usuarios logueados)
+│   └── styles/
+│       ├── themes/              # Variables de colores (CSS o SASS)
+│       └── global.css           # Reset CSS y estilos base
 ```
 
 ## 👩‍💻 Flujo de Trabajo Colaborativo
