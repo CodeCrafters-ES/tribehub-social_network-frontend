@@ -1,0 +1,146 @@
+@import "tailwindcss";
+
+@theme {
+  --font-display: "Inika", "Satoshi", "Montserrat", "sans-serif";
+  --breakpoint-3xl: 1920px;
+  --color-primary: #0071DB;
+  --color-secondary: #00DBC2;
+  --color-tertiary: #12054A;
+  --color-white: #ffffff;
+  --color-black: #000000;
+  --color-gray-80: #303030;
+  --color-gray-75: #484848;
+  --color-gray-50: #848484;
+  --color-gray-37: #BABABA;
+  --color-gray-25: #C5C5C5;
+  --color-gray-background: #F0F0F0;
+  --color-status-error: #D7062F;
+  --color-status-warning: #E8E800;
+  --color-status-success: #78E055;
+  --color-avocado-500: oklch(0.84 0.18 117.33);
+  --ease-fluid: cubic-bezier(0.3, 0, 0, 1);
+  --ease-snappy: cubic-bezier(0.2, 0, 0, 1);
+  --width-w30: '30%';
+}
+
+/* Desplazamiento suave */
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+/* Images */
+/*
+.bg-hero {
+  background-image: url('./src/assets/images/hero.jpg');
+  background-size: cover;
+  background-position: center;
+}
+  */
+
+/* LANDING */
+/* Hero Section */
+.hero {
+  background: linear-gradient(90deg, var(--color-primary), var(--color-secondary));
+  /* background-color: aqua; */
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-content {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 4rem;
+  align-items: center;
+  z-index: 2;
+  color: white;
+}
+
+.hero-text {
+  max-width: 600px;  
+  text-align: left;
+  margin-left: 10vw;
+}
+
+.hero-text h1 {
+  font-size: 3.5rem;
+  font-weight: 800;  
+  margin-bottom: 1.5rem;
+  line-height: 1.2;
+  animation: fadeInUp 1s ease;
+}
+
+.hero-text h2 {
+  font-size: 2rem;
+  font-weight: 800;  
+  margin-bottom: 1.5rem;
+  line-height: 1.2;
+  animation: fadeInUp 1s ease;
+}
+
+.hero-text p {
+  font-size: 1.2rem;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 2rem;
+  animation: fadeInUp 1s ease 0.2s both;
+}
+
+/* Login Form */
+
+.login-form {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 1rem;
+  background-color: var(--color-white);
+  color: var(--color-gray-80);
+  padding: 2rem;  
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.login-form input {
+  border: 1px solid var(--color-gray-25);
+  border-radius: 8px;
+  padding:12px 20px;
+  width: 100%;  
+}
+/*
+.login-form .btn-form {
+  background-color: var(--color-primary);
+  color: var(--color-white);
+  width: 100%;
+  padding: 12px 20px;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease-in-out;
+}
+
+.login-form .btn-form:hover {
+  opacity: 0.8;
+  transform: scale(1.02);
+}
+*/
+
+.btn-form-base {
+  @apply w-full py-3 px-5 text-white rounded-md hover:opacity-80 cursor-pointer transition-all duration-300 ease-in-out;  
+}
+
+.btn-form-login {
+  @apply bg-primary;
+}
+
+.btn-form-signup {
+  @apply bg-secondary;
+}
