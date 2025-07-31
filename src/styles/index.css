@@ -114,6 +114,7 @@ html {
   border-radius: 8px;
   padding:12px 20px;
   width: 100%;  
+  @apply focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent;
 }
 /*
 .login-form .btn-form {
