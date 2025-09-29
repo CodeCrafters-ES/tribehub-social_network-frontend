@@ -1,43 +1,40 @@
-// import { useState } from 'react'
-// import reactLogo from './assets/react.svg'
-// import viteLogo from '/assets/vite.svg'
-import Hero from '../../components/landing/Hero'
-import './App.css'
+import React from 'react';
+import { Routes, Route, Navigate } from 'react-router-dom';
+import Hero from '../../components/landing/Hero';
+import LoginForm from '../../components/landing/LoginForm';
+import Dashboard from '../Dashboard';
+import ProtectedRoute from '../../components/ProtectedRoute';
+import './App.css';
 
-function App() {  
-
-
-  // const [count, setCount] = useState(0)
-
+function App() {
   return (
-    <>
-      <Hero />
+    <div className="App">
+      <Routes>
+        {/* Ruta principal - Landing page */}
+        <Route
+          path="/"
+          element={
+            <div className="landing-page">
+              <Hero />
+            </div>
+          }
+        />
 
+        {/* Ruta del dashboard - Protegida */}
+        <Route
+          path="/dashboard"
+          element={
+            <ProtectedRoute>
+              <Dashboard />
+            </ProtectedRoute>
+          }
+        />
 
-
-
-
-
-      {/* <div>
-        <a href="https://vite.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
-        </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div> */}
-      
-    </>
-  )
+        {/* Ruta por defecto - redirigir a landing */}
+        <Route path="*" element={<Navigate to="/" replace />} />
+      </Routes>
+    </div>
+  );
 }
 
-export default App
+export default App;
