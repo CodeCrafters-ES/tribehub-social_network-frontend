@@ -39,24 +39,25 @@ jobs:
         env:
           NEXT_TELEMETRY_DISABLED: 1
 
-      # Análisis de Bundle
       - name: Analyze Bundle
-        uses: total-typescript/nextjs-bundle-analysis-action@v2
+        uses: chyc/nextjs-bundle-analysis-action@v1
+        with:
+          build-command: npm run build
 
   lighthouse:
     runs-on: ubuntu-latest
     # Espera a que el build pase primero para no gastar minutos de GitHub si hay errores de sintaxis
-    needs: build-and-test 
+    needs: build-and-test
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: 20
           cache: 'npm'
-      
+
       - run: npm ci
       - run: npm run build
-      
+
       - name: Run Lighthouse
         run: |
           npm install -g @lhci/cli@0.13.x
