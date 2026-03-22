@@ -25,7 +25,6 @@ jobs:
       - name: Lint (Calidad de código)
         run: npm run lint
 
-      # LA CACHÉ DEBE IR ANTES DEL BUILD
       - name: Cache Next.js build
         uses: actions/cache@v4
         with:
@@ -34,19 +33,15 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-
 
-      - name: Build (Verificación de compilación)
+      # FUSIONADO: Un solo build que hace la validación y el análisis a la vez
+      - name: Build con Análisis de Bundle
         run: npm run build
         env:
+          ANALYZE: true
           NEXT_TELEMETRY_DISABLED: 1
-
-      - name: Analyze Bundle
-        uses: chyc/nextjs-bundle-analysis-action@v1
-        with:
-          build-command: npm run build
 
   lighthouse:
     runs-on: ubuntu-latest
-    # Espera a que el build pase primero para no gastar minutos de GitHub si hay errores de sintaxis
     needs: build-and-test
     steps:
       - uses: actions/checkout@v4
@@ -56,6 +51,8 @@ jobs:
           cache: 'npm'
 
       - run: npm ci
+
+      # Generamos el build para que Lighthouse tenga algo que auditar
       - run: npm run build
 
       - name: Run Lighthouse
