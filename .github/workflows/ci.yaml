@@ -1,0 +1,65 @@
+name: CI - Verificación de Código
+
+on:
+  pull_request:
+    branches: [main, develop]
+  push:
+    branches: [develop]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout del código
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Lint (Calidad de código)
+        run: npm run lint
+
+      # LA CACHÉ DEBE IR ANTES DEL BUILD
+      - name: Cache Next.js build
+        uses: actions/cache@v4
+        with:
+          path: ${{ github.workspace }}/.next/cache
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
+          restore-keys: |
+            ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-
+
+      - name: Build (Verificación de compilación)
+        run: npm run build
+        env:
+          NEXT_TELEMETRY_DISABLED: 1
+
+      # Análisis de Bundle
+      - name: Analyze Bundle
+        uses: total-typescript/nextjs-bundle-analysis-action@v2
+
+  lighthouse:
+    runs-on: ubuntu-latest
+    # Espera a que el build pase primero para no gastar minutos de GitHub si hay errores de sintaxis
+    needs: build-and-test 
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+      
+      - run: npm ci
+      - run: npm run build
+      
+      - name: Run Lighthouse
+        run: |
+          npm install -g @lhci/cli@0.13.x
+          lhci autoreview
+        env:
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.GITHUB_TOKEN }}

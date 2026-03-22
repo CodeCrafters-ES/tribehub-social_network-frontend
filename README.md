@@ -2,16 +2,15 @@
 
 ## Bienvenido/a al repositorio del proyecto **Social Network** en el que colabora el equipo **Frontend**
 
-Este proyecto usa **Vite**, **React**, **HTML** y **TailwindCSS** como base para un desarrollo rápido, modular y escalable.
+Este proyecto usa **NextJS**, **HTML** y **TailwindCSS** como base para un desarrollo rápido, modular y escalable.
 
 ---
 
 [![Licencia](https://img.shields.io/badge/licencia-MIT-blue)](LICENSE)
-[![Vite](https://img.shields.io/badge/vite-%5E7.0.4-orange)](https://vitejs.dev/)
-[![React](https://img.shields.io/badge/react-%5E22.17.0-blue)](https://react.dev/)
-[![Tailwind CSS](https://img.shields.io/badge/tailwindcss-%5E3.3.0-06B6D4)](https://tailwindcss.com/)
+[![NextJS](https://img.shields.io/badge/NextJS-16.2.1-orange)](https://nextjs.org/)
+[![Tailwind CSS](https://img.shields.io/badge/tailwindcss-%5E4-06B6D4)](https://tailwindcss.com/)
 
-Aplicación web de una red social moderna construida con **Vite**, **React** y **Tailwind CSS**.
+Aplicación web de una red social moderna construida con **NextJS** y **Tailwind CSS**.
 Incluye funcionalidades como autenticación, publicaciones, comentarios y perfiles de usuario.
 
 <!-- ![Captura de Pantalla](./src/assets/screenshot.png)  <!-- Reemplazar con imagen real -->
@@ -42,7 +41,7 @@ Para conocer las pautas detalladas de contribución, consulta el archivo [CONTRI
 
 ### Opción 1: Acceder Online (Recomendado)
 
-Simplemente visita **[https://tribehub.com](https://tribehub.com)** en tu navegador (Chrome, Firefox o Edge).  
+Simplemente visita **[https://tribehub.app](https://tribehub.app)** en tu navegador (Chrome, Firefox o Edge).  
 
 ### Opción 2: Ejecutar Localmente (Para Testing)
 
