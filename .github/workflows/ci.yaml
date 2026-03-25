@@ -25,6 +25,9 @@ jobs:
       - name: Lint (Calidad de código)
         run: npm run lint
 
+      - name: Run Jest tests
+        run: npm run test
+
       - name: Cache Next.js build
         uses: actions/cache@v4
         with:
