@@ -20,7 +20,6 @@ export const metadata: Metadata = {
   title: 'TribeHub | Social Network',
   description: 'Conecta con el mundo de una nueva manera',
   viewport: 'width=device-width, initial-scale=1',
-  charset: 'utf-8',
   keywords: ['social network', 'tribehub', 'community'],
   robots: 'index, follow',
   icons: {
