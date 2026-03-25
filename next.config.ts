@@ -7,6 +7,8 @@ const nextConfig: NextConfig = {
     formats: ['image/avif', 'image/webp'],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
+    /* Lazy loading por defecto */
+    unoptimized: false,
   },
   /* Caching de archivos estáticos */
   headers: async () => {
@@ -20,6 +22,15 @@ const nextConfig: NextConfig = {
           },
         ],
       },
+      {
+        source: '/manifest.json',
+        headers: [
+          {
+            key: 'Content-Type',
+            value: 'application/manifest+json',
+          },
+        ],
+      },
     ];
   },
   /* Compresión habilitada por defecto en Next.js 16 */
@@ -27,6 +38,18 @@ const nextConfig: NextConfig = {
   /* Optimización de fuentes */
   experimental: {
     optimizePackageImports: ['next/font/google'],
+  },
+  /* Optimizar código dividido */
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      /* Optimizar bundle de cliente */
+      config.optimization = {
+        ...config.optimization,
+        usedExports: true,
+        sideEffects: false,
+      };
+    }
+    return config;
   },
 };
 

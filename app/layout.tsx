@@ -6,14 +6,14 @@ const geistSans = Geist({
   variable: '--font-geist-sans',
   subsets: ['latin'],
   display: 'swap',
-  preload: true,
+  preload: false,
 });
 
 const geistMono = Geist_Mono({
   variable: '--font-geist-mono',
   subsets: ['latin'],
   display: 'swap',
-  preload: true,
+  preload: false,
 });
 
 export const metadata: Metadata = {
@@ -22,8 +22,18 @@ export const metadata: Metadata = {
   viewport: 'width=device-width, initial-scale=1',
   keywords: ['social network', 'tribehub', 'community'],
   robots: 'index, follow',
+  manifest: '/manifest.json',
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: 'black-translucent',
+    title: 'TribeHub',
+  },
   icons: {
     icon: '/favicon.ico',
+    apple: [
+      { url: '/icon-192x192.png', sizes: '192x192', type: 'image/png' },
+      { url: '/icon-512x512.png', sizes: '512x512', type: 'image/png' },
+    ],
   },
 };
 
@@ -49,7 +59,7 @@ export default function RootLayout({
         />
         <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
       </head>
-      <body className="min-h-screen bg-white dark:bg-slate-950">
+      <body className="min-h-screen bg-white dark:bg-slate-950" style={{ fontDisplay: 'swap' }}>
         <a href="#main-content" className="sr-only">
           Ir al contenido principal
         </a>
