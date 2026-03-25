@@ -1,20 +1,10 @@
 import type { Metadata } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
+import { GeistSans, GeistMono } from 'geist/font';
 import './globals.css';
 
-const geistSans = Geist({
-  variable: '--font-geist-sans',
-  subsets: ['latin'],
-  display: 'swap',
-  preload: false,
-});
+const geistSans = GeistSans;
 
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
-  subsets: ['latin'],
-  display: 'swap',
-  preload: false,
-});
+const geistMono = GeistMono;
 
 export const metadata: Metadata = {
   title: 'TribeHub | Social Network',
@@ -59,7 +49,7 @@ export default function RootLayout({
         />
         <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
       </head>
-      <body className="min-h-screen bg-white dark:bg-slate-950" style={{ fontDisplay: 'swap' }}>
+      <body className="min-h-screen bg-white dark:bg-slate-950">
         <a href="#main-content" className="sr-only">
           Ir al contenido principal
         </a>
