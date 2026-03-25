@@ -1,25 +1,18 @@
 @import 'tailwindcss';
 
-/* Optimización crítica de fuentes y rendering */
 html {
   scroll-behavior: smooth;
-  font-feature-settings: 'kern' 1;
-  /* Prevenir layout shift mientras las fuentes cargan */
-  font-size: 16px;
 }
 
 body {
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  /* Valores por defecto de fuente para evitar FOUT */
   font-family:
     -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica',
     'Arial', sans-serif;
-  font-display: swap;
 }
 
-/* Skip to main content link */
 .sr-only {
   position: absolute;
   width: 1px;
@@ -46,12 +39,6 @@ body {
   z-index: 9999;
 }
 
-/* Lazy loading images fallback */
-img[loading='lazy'] {
-  background-color: #f3f4f6;
-}
-
-/* Performance: Reduce motion for users who prefer it */
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,

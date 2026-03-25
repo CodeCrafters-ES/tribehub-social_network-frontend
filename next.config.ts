@@ -2,15 +2,12 @@ import type { NextConfig } from 'next';
 import withBundleAnalyzer from '@next/bundle-analyzer';
 
 const nextConfig: NextConfig = {
-  /* Optimización de imágenes */
   images: {
     formats: ['image/avif', 'image/webp'],
     deviceSizes: [640, 750, 828, 1080, 1200, 1920, 2048, 3840],
     imageSizes: [16, 32, 48, 64, 96, 128, 256, 384],
-    /* Lazy loading por defecto */
     unoptimized: false,
   },
-  /* Caching de archivos estáticos */
   headers: async () => {
     return [
       {
@@ -23,15 +20,6 @@ const nextConfig: NextConfig = {
         ],
       },
       {
-        source: '/manifest.json',
-        headers: [
-          {
-            key: 'Content-Type',
-            value: 'application/manifest+json',
-          },
-        ],
-      },
-      {
         source: '/:path*',
         headers: [
           {
@@ -40,7 +28,8 @@ const nextConfig: NextConfig = {
           },
           {
             key: 'Content-Security-Policy',
-            value: "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: https:; connect-src 'self' https:;",
+            value:
+              "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval' 'wasm-unsafe-eval'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; connect-src 'self' https:;",
           },
           {
             key: 'X-Content-Type-Options',
@@ -66,14 +55,15 @@ const nextConfig: NextConfig = {
       },
     ];
   },
-  /* Compresión habilitada por defecto en Next.js 16 */
   compress: true,
-  /* Optimización de fuentes */
   experimental: {
     optimizePackageImports: ['next/font/google'],
   },
-  /* Turbopack es el bundler por defecto en Next.js 16 */
-  turbopack: {},
+  turbopack: {
+    resolveAlias: {
+      '@': './app',
+    },
+  },
 };
 
 export default withBundleAnalyzer({

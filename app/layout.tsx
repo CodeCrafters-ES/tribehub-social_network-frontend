@@ -1,18 +1,16 @@
-import type { Metadata } from 'next';
-import { GeistSans, GeistMono } from 'geist/font';
+import type { Metadata, Viewport } from 'next';
 import './globals.css';
 
-const geistSans = GeistSans;
-
-const geistMono = GeistMono;
+export const viewport: Viewport = {
+  width: 'device-width',
+  initialScale: 1,
+};
 
 export const metadata: Metadata = {
   title: 'TribeHub | Social Network',
   description: 'Conecta con el mundo de una nueva manera',
-  viewport: 'width=device-width, initial-scale=1',
   keywords: ['social network', 'tribehub', 'community'],
   robots: 'index, follow',
-  manifest: '/manifest.json',
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
@@ -20,10 +18,6 @@ export const metadata: Metadata = {
   },
   icons: {
     icon: '/favicon.ico',
-    apple: [
-      { url: '/icon-192x192.png', sizes: '192x192', type: 'image/png' },
-      { url: '/icon-512x512.png', sizes: '512x512', type: 'image/png' },
-    ],
   },
 };
 
@@ -33,21 +27,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html
-      lang="es"
-      suppressHydrationWarning
-      className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-    >
+    <html lang="es" suppressHydrationWarning>
       <head>
         <meta charSet="utf-8" />
         <meta name="theme-color" content="#000000" />
-        <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link
-          rel="preconnect"
-          href="https://fonts.gstatic.com"
-          crossOrigin="anonymous"
-        />
-        <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
       </head>
       <body className="min-h-screen bg-white dark:bg-slate-950">
         <a href="#main-content" className="sr-only">
