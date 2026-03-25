@@ -42,11 +42,17 @@ export default function RootLayout({
         <meta charSet="utf-8" />
         <meta name="theme-color" content="#000000" />
         <link rel="preconnect" href="https://fonts.googleapis.com" />
-        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          rel="preconnect"
+          href="https://fonts.gstatic.com"
+          crossOrigin="anonymous"
+        />
         <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
       </head>
       <body className="min-h-screen bg-white dark:bg-slate-950">
-        <a href="#main-content" className="sr-only">Ir al contenido principal</a>
+        <a href="#main-content" className="sr-only">
+          Ir al contenido principal
+        </a>
         <main id="main-content" role="main">
           {children}
         </main>
