@@ -1,0 +1,8 @@
+# Ignore artifacts:
+/public
+
+# dependencies
+/node_modules
+
+# next.js
+/.next/
