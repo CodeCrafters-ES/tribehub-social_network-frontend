@@ -61,7 +61,7 @@ const nextConfig: NextConfig = {
   },
   turbopack: {
     resolveAlias: {
-      '@': './app',
+      '@': './',
     },
   },
 };
