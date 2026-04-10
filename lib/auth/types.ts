@@ -16,11 +16,20 @@ export interface AuthUser {
   avatarUrl?: string;
 }
 
+/**
+ * Shape of the backend envelope returned by POST /auth/login.
+ * Contract: { success, message, data: { accessToken, refreshToken, user } }
+ */
+export interface BackendAuthResponseData {
+  accessToken: string | null;
+  refreshToken: string | null;
+  user: AuthUser | null;
+}
+
 export interface BackendAuthResponse {
-  accessToken?: string;
-  token?: string;
-  user?: AuthUser;
+  success?: boolean;
   message?: string;
+  data?: BackendAuthResponseData;
 }
 
 export interface LoginResult {

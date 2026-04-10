@@ -66,7 +66,7 @@ export async function POST(request: Request) {
       );
     }
 
-    const token = data?.accessToken ?? data?.token;
+    const token = data?.data?.accessToken;
     if (!token) {
       return NextResponse.json(
         { message: 'Respuesta de autenticación inválida: falta token.' },
@@ -75,7 +75,7 @@ export async function POST(request: Request) {
     }
 
     const response = NextResponse.json(
-      { user: data?.user ?? null, message: 'Login exitoso.' },
+      { user: data?.data?.user ?? null, message: 'Login exitoso.' },
       { status: 200 },
     );
 
