@@ -1,62 +1,33 @@
 'use client';
 
+import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useState, type FormEvent } from 'react';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 
+import { login, LoginError } from '@/features/auth/client';
+import { loginSchema, type LoginFormValues } from '@/features/auth/schemas';
 import Button from '@/shared/ui/Button';
 import Input from '@/shared/ui/Input';
-import { login, LoginError } from '@/features/auth/client';
-
-type LoginFormValues = {
-  email: string;
-  password: string;
-};
-
-type LoginFormErrors = Partial<Record<keyof LoginFormValues, string>>;
-
-function validate(values: LoginFormValues): LoginFormErrors {
-  const errors: LoginFormErrors = {};
-
-  if (!values.email.trim()) {
-    errors.email = 'El email es obligatorio.';
-  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email)) {
-    errors.email = 'Ingresa un email válido.';
-  }
-
-  if (!values.password) {
-    errors.password = 'La contraseña es obligatoria.';
-  } else if (values.password.length < 8) {
-    errors.password = 'La contraseña debe tener al menos 8 caracteres.';
-  }
-
-  return errors;
-}
 
 export default function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [values, setValues] = useState<LoginFormValues>({
-    email: '',
-    password: '',
-  });
-  const [errors, setErrors] = useState<LoginFormErrors>({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
 
-  const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<LoginFormValues>({
+    resolver: zodResolver(loginSchema),
+  });
 
-    const validationErrors = validate(values);
-    setErrors(validationErrors);
+  const onSubmit = handleSubmit(async (values) => {
     setServerError(null);
 
-    if (Object.keys(validationErrors).length > 0) {
-      return;
-    }
-
     try {
-      setIsSubmitting(true);
       await login(values);
 
       const nextPath = searchParams.get('next');
@@ -73,10 +44,8 @@ export default function LoginForm() {
       } else {
         setServerError('No fue posible iniciar sesión. Intenta más tarde.');
       }
-    } finally {
-      setIsSubmitting(false);
     }
-  };
+  });
 
   return (
     <form
@@ -104,30 +73,22 @@ export default function LoginForm() {
 
       <Input
         id="email"
-        name="email"
         label="Email"
         type="email"
         autoComplete="email"
         placeholder="user@example.com"
-        value={values.email}
-        error={errors.email}
-        onChange={(event) =>
-          setValues((prev) => ({ ...prev, email: event.target.value }))
-        }
+        error={errors.email?.message}
+        {...register('email')}
       />
 
       <Input
         id="password"
-        name="password"
         label="Contraseña"
         type="password"
         autoComplete="current-password"
         placeholder="********"
-        value={values.password}
-        error={errors.password}
-        onChange={(event) =>
-          setValues((prev) => ({ ...prev, password: event.target.value }))
-        }
+        error={errors.password?.message}
+        {...register('password')}
       />
 
       <Button type="submit" isLoading={isSubmitting}>

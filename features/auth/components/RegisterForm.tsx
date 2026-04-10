@@ -1,86 +1,33 @@
 'use client';
 
+import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { useState, type FormEvent } from 'react';
+import { useState } from 'react';
+import { useForm } from 'react-hook-form';
 
+import { register as registerUser, RegisterError } from '@/features/auth/client';
+import { registerSchema, type RegisterFormValues } from '@/features/auth/schemas';
 import Button from '@/shared/ui/Button';
 import Input from '@/shared/ui/Input';
-import { register, RegisterError } from '@/features/auth/client';
-
-type RegisterFormValues = {
-  username: string;
-  email: string;
-  password: string;
-  confirmPassword: string;
-};
-
-type RegisterFormErrors = Partial<Record<keyof RegisterFormValues, string>>;
-
-function validate(values: RegisterFormValues): RegisterFormErrors {
-  const errors: RegisterFormErrors = {};
-
-  if (!values.username.trim()) {
-    errors.username = 'El nombre de usuario es obligatorio.';
-  } else if (values.username.includes(' ')) {
-    errors.username = 'El nombre de usuario no puede contener espacios.';
-  } else if (values.username.trim().length < 2) {
-    errors.username = 'El nombre de usuario debe tener al menos 2 caracteres.';
-  }
-
-  if (!values.email.trim()) {
-    errors.email = 'El email es obligatorio.';
-  } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(values.email)) {
-    errors.email = 'Ingresa un email válido.';
-  }
-
-  if (!values.password) {
-    errors.password = 'La contraseña es obligatoria.';
-  } else if (values.password.length < 8) {
-    errors.password = 'La contraseña debe tener al menos 8 caracteres.';
-  } else if (!/[a-z]/.test(values.password)) {
-    errors.password = 'La contraseña debe tener al menos una letra minúscula.';
-  } else if (!/[0-9]/.test(values.password)) {
-    errors.password = 'La contraseña debe tener al menos un número.';
-  } else if (!/[^A-Za-z0-9]/.test(values.password)) {
-    errors.password = 'La contraseña debe tener al menos un símbolo (ej. @, !, #).';
-  }
-
-  if (!values.confirmPassword) {
-    errors.confirmPassword = 'Confirma tu contraseña.';
-  } else if (values.confirmPassword !== values.password) {
-    errors.confirmPassword = 'Las contraseñas no coinciden.';
-  }
-
-  return errors;
-}
 
 export default function RegisterForm() {
   const router = useRouter();
-  const [values, setValues] = useState<RegisterFormValues>({
-    username: '',
-    email: '',
-    password: '',
-    confirmPassword: '',
-  });
-  const [errors, setErrors] = useState<RegisterFormErrors>({});
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
 
-  const onSubmit = async (event: FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  const {
+    register,
+    handleSubmit,
+    formState: { errors, isSubmitting },
+  } = useForm<RegisterFormValues>({
+    resolver: zodResolver(registerSchema),
+  });
 
-    const validationErrors = validate(values);
-    setErrors(validationErrors);
+  const onSubmit = handleSubmit(async (values) => {
     setServerError(null);
 
-    if (Object.keys(validationErrors).length > 0) {
-      return;
-    }
-
     try {
-      setIsSubmitting(true);
-      const result = await register({
+      const result = await registerUser({
         username: values.username.trim(),
         email: values.email.trim().toLowerCase(),
         password: values.password,
@@ -99,10 +46,8 @@ export default function RegisterForm() {
       } else {
         setServerError('No fue posible completar el registro. Intenta más tarde.');
       }
-    } finally {
-      setIsSubmitting(false);
     }
-  };
+  });
 
   return (
     <form
@@ -130,61 +75,42 @@ export default function RegisterForm() {
 
       <Input
         id="username"
-        name="username"
         label="Nombre de usuario"
         type="text"
         autoComplete="username"
         placeholder="sin espacios, ej. juanperez"
-        value={values.username}
-        error={errors.username}
-        onChange={(event) =>
-          setValues((prev) => ({ ...prev, username: event.target.value }))
-        }
+        error={errors.username?.message}
+        {...register('username')}
       />
 
       <Input
         id="email"
-        name="email"
         label="Email"
         type="email"
         autoComplete="email"
         placeholder="user@example.com"
-        value={values.email}
-        error={errors.email}
-        onChange={(event) =>
-          setValues((prev) => ({ ...prev, email: event.target.value }))
-        }
+        error={errors.email?.message}
+        {...register('email')}
       />
 
       <Input
         id="password"
-        name="password"
         label="Contraseña"
         type="password"
         autoComplete="new-password"
         placeholder="Mín. 8 chars, número y símbolo"
-        value={values.password}
-        error={errors.password}
-        onChange={(event) =>
-          setValues((prev) => ({ ...prev, password: event.target.value }))
-        }
+        error={errors.password?.message}
+        {...register('password')}
       />
 
       <Input
         id="confirmPassword"
-        name="confirmPassword"
         label="Confirmar contraseña"
         type="password"
         autoComplete="new-password"
         placeholder="Repite tu contraseña"
-        value={values.confirmPassword}
-        error={errors.confirmPassword}
-        onChange={(event) =>
-          setValues((prev) => ({
-            ...prev,
-            confirmPassword: event.target.value,
-          }))
-        }
+        error={errors.confirmPassword?.message}
+        {...register('confirmPassword')}
       />
 
       <Button type="submit" isLoading={isSubmitting}>
