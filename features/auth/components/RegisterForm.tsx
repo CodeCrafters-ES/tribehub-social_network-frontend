@@ -21,6 +21,7 @@ export default function RegisterForm() {
     formState: { errors, isSubmitting },
   } = useForm<RegisterFormValues>({
     resolver: zodResolver(registerSchema),
+    mode: 'onTouched',
   });
 
   const onSubmit = handleSubmit(async (values) => {
@@ -28,18 +29,18 @@ export default function RegisterForm() {
 
     try {
       const result = await registerUser({
-        username: values.username.trim(),
-        email: values.email.trim().toLowerCase(),
+        username: values.username,
+        email: values.email,
         password: values.password,
       });
 
+      // Supabase requires email confirmation before login is possible.
+      // Redirect to a confirmation notice page regardless of session state.
       if (result.hasSession) {
         router.replace('/feed');
       } else {
-        router.replace('/login?registered=1');
+        router.replace('/register/confirm-email');
       }
-
-      router.refresh();
     } catch (error) {
       if (error instanceof RegisterError) {
         setServerError(error.message);
@@ -51,16 +52,16 @@ export default function RegisterForm() {
 
   return (
     <form
-      className="w-full max-w-[460px] animate-[slide-up_320ms_ease-out] space-y-4 rounded-2xl border border-brand-border bg-brand-surface p-7 shadow-card"
+      className="w-full max-w-[420px] animate-[slide-up_320ms_ease-out] space-y-4 rounded-2xl border border-brand-border bg-brand-surface p-7 shadow-card"
       onSubmit={onSubmit}
       noValidate
     >
       <header>
         <h1 className="text-3xl font-semibold leading-tight text-brand-textMain">
-          Crea tu cuenta en TribeHub
+          Crea tu cuenta
         </h1>
         <p className="mt-1 text-sm text-brand-textMuted">
-          Únete a tus comunidades y empieza a compartir.
+          Únete a TribeHub y conecta con tus comunidades.
         </p>
       </header>
 
@@ -78,7 +79,7 @@ export default function RegisterForm() {
         label="Nombre de usuario"
         type="text"
         autoComplete="username"
-        placeholder="sin espacios, ej. juanperez"
+        placeholder="tu_nombre"
         error={errors.username?.message}
         {...register('username')}
       />
@@ -98,7 +99,7 @@ export default function RegisterForm() {
         label="Contraseña"
         type="password"
         autoComplete="new-password"
-        placeholder="Mín. 8 chars, número y símbolo"
+        hint="Mín. 8 caracteres, 1 número y 1 símbolo"
         error={errors.password?.message}
         {...register('password')}
       />
@@ -108,7 +109,6 @@ export default function RegisterForm() {
         label="Confirmar contraseña"
         type="password"
         autoComplete="new-password"
-        placeholder="Repite tu contraseña"
         error={errors.confirmPassword?.message}
         {...register('confirmPassword')}
       />
