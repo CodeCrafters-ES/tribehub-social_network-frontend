@@ -31,8 +31,13 @@ export default function LoginForm() {
       await login(values);
 
       const nextPath = searchParams.get('next');
+      const isAuthGroupPath =
+        nextPath?.startsWith('/login') || nextPath?.startsWith('/register');
       const safePath =
-        nextPath && nextPath.startsWith('/') && !nextPath.startsWith('//')
+        nextPath &&
+        nextPath.startsWith('/') &&
+        !nextPath.startsWith('//') &&
+        !isAuthGroupPath
           ? nextPath
           : '/feed';
 
