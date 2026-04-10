@@ -70,12 +70,12 @@ export async function POST(request: Request) {
       );
     }
 
-    const token = data?.accessToken ?? data?.token;
+    const token = data?.data?.accessToken ?? null;
     const hasSession = Boolean(token);
 
     const response = NextResponse.json(
       {
-        user: data?.user ?? null,
+        user: data?.data?.user ?? null,
         hasSession,
         message: 'Registro exitoso.',
       },
