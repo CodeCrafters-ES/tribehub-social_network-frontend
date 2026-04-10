@@ -9,7 +9,7 @@ import Input from '@/components/ui/Input';
 import { register, RegisterError } from '@/lib/auth/client';
 
 type RegisterFormValues = {
-  name: string;
+  username: string;
   email: string;
   password: string;
   confirmPassword: string;
@@ -20,10 +20,12 @@ type RegisterFormErrors = Partial<Record<keyof RegisterFormValues, string>>;
 function validate(values: RegisterFormValues): RegisterFormErrors {
   const errors: RegisterFormErrors = {};
 
-  if (!values.name.trim()) {
-    errors.name = 'El nombre es obligatorio.';
-  } else if (values.name.trim().length < 2) {
-    errors.name = 'El nombre debe tener al menos 2 caracteres.';
+  if (!values.username.trim()) {
+    errors.username = 'El nombre de usuario es obligatorio.';
+  } else if (values.username.includes(' ')) {
+    errors.username = 'El nombre de usuario no puede contener espacios.';
+  } else if (values.username.trim().length < 2) {
+    errors.username = 'El nombre de usuario debe tener al menos 2 caracteres.';
   }
 
   if (!values.email.trim()) {
@@ -36,6 +38,12 @@ function validate(values: RegisterFormValues): RegisterFormErrors {
     errors.password = 'La contraseña es obligatoria.';
   } else if (values.password.length < 8) {
     errors.password = 'La contraseña debe tener al menos 8 caracteres.';
+  } else if (!/[a-z]/.test(values.password)) {
+    errors.password = 'La contraseña debe tener al menos una letra minúscula.';
+  } else if (!/[0-9]/.test(values.password)) {
+    errors.password = 'La contraseña debe tener al menos un número.';
+  } else if (!/[^A-Za-z0-9]/.test(values.password)) {
+    errors.password = 'La contraseña debe tener al menos un símbolo (ej. @, !, #).';
   }
 
   if (!values.confirmPassword) {
@@ -50,7 +58,7 @@ function validate(values: RegisterFormValues): RegisterFormErrors {
 export default function RegisterForm() {
   const router = useRouter();
   const [values, setValues] = useState<RegisterFormValues>({
-    name: '',
+    username: '',
     email: '',
     password: '',
     confirmPassword: '',
@@ -73,7 +81,7 @@ export default function RegisterForm() {
     try {
       setIsSubmitting(true);
       const result = await register({
-        name: values.name.trim(),
+        username: values.username.trim(),
         email: values.email.trim().toLowerCase(),
         password: values.password,
       });
@@ -121,16 +129,16 @@ export default function RegisterForm() {
       )}
 
       <Input
-        id="name"
-        name="name"
-        label="Nombre"
+        id="username"
+        name="username"
+        label="Nombre de usuario"
         type="text"
-        autoComplete="name"
-        placeholder="Tu nombre"
-        value={values.name}
-        error={errors.name}
+        autoComplete="username"
+        placeholder="sin espacios, ej. juanperez"
+        value={values.username}
+        error={errors.username}
         onChange={(event) =>
-          setValues((prev) => ({ ...prev, name: event.target.value }))
+          setValues((prev) => ({ ...prev, username: event.target.value }))
         }
       />
 
@@ -154,7 +162,7 @@ export default function RegisterForm() {
         label="Contraseña"
         type="password"
         autoComplete="new-password"
-        placeholder="Mínimo 8 caracteres"
+        placeholder="Mín. 8 chars, número y símbolo"
         value={values.password}
         error={errors.password}
         onChange={(event) =>

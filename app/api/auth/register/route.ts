@@ -18,8 +18,9 @@ function isValidPayload(payload: unknown): payload is RegisterPayload {
   const candidate = payload as Partial<RegisterPayload>;
 
   return (
-    typeof candidate.name === 'string' &&
-    candidate.name.trim().length > 1 &&
+    typeof candidate.username === 'string' &&
+    candidate.username.trim().length > 0 &&
+    !candidate.username.includes(' ') &&
     typeof candidate.email === 'string' &&
     candidate.email.length > 0 &&
     typeof candidate.password === 'string' &&
@@ -51,7 +52,7 @@ export async function POST(request: Request) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        name: body.name.trim(),
+        username: body.username.trim(),
         email: body.email.trim().toLowerCase(),
         password: body.password,
       }),
