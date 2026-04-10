@@ -11,9 +11,61 @@ import { registerSchema, type RegisterFormValues } from '@/features/auth/schemas
 import Button from '@/shared/ui/Button';
 import Input from '@/shared/ui/Input';
 
+type ServerErrorKind = 'conflict' | 'validation' | 'network';
+
+interface ServerErrorState {
+  kind: ServerErrorKind;
+  content: React.ReactNode;
+}
+
+function resolveConflictMessage(backendMessage: string): React.ReactNode {
+  const lower = backendMessage.toLowerCase();
+
+  if (lower.includes('email')) {
+    return (
+      <>
+        Este email ya está registrado.{' '}
+        <Link
+          href="/login"
+          className="font-semibold underline underline-offset-2 transition hover:opacity-80"
+        >
+          Inicia sesión
+        </Link>{' '}
+        o usa otro email.
+      </>
+    );
+  }
+
+  if (lower.includes('username') || lower.includes('nombre de usuario')) {
+    return 'Este nombre de usuario no está disponible. Elige otro.';
+  }
+
+  return (
+    <>
+      El email o nombre de usuario ya están en uso.{' '}
+      <Link
+        href="/login"
+        className="font-semibold underline underline-offset-2 transition hover:opacity-80"
+      >
+        Inicia sesión
+      </Link>{' '}
+      si ya tienes cuenta.
+    </>
+  );
+}
+
+const ERROR_STYLES: Record<ServerErrorKind, string> = {
+  conflict:
+    'rounded-xl border border-amber-300 bg-amber-50 px-3 py-2.5 text-sm font-medium text-amber-800',
+  validation:
+    'rounded-xl border border-red-300 bg-red-50 px-3 py-2.5 text-sm font-medium text-brand-danger',
+  network:
+    'rounded-xl border border-red-300 bg-red-50 px-3 py-2.5 text-sm font-medium text-brand-danger',
+};
+
 export default function RegisterForm() {
   const router = useRouter();
-  const [serverError, setServerError] = useState<string | null>(null);
+  const [serverError, setServerError] = useState<ServerErrorState | null>(null);
 
   const {
     register,
@@ -43,9 +95,27 @@ export default function RegisterForm() {
       }
     } catch (error) {
       if (error instanceof RegisterError) {
-        setServerError(error.message);
+        if (error.statusCode === 409) {
+          setServerError({
+            kind: 'conflict',
+            content: resolveConflictMessage(error.message),
+          });
+        } else if (error.statusCode === 400) {
+          setServerError({
+            kind: 'validation',
+            content: error.message,
+          });
+        } else {
+          setServerError({
+            kind: 'network',
+            content: 'No fue posible completar el registro. Intenta más tarde.',
+          });
+        }
       } else {
-        setServerError('No fue posible completar el registro. Intenta más tarde.');
+        setServerError({
+          kind: 'network',
+          content: 'No fue posible completar el registro. Intenta más tarde.',
+        });
       }
     }
   });
@@ -67,10 +137,10 @@ export default function RegisterForm() {
 
       {serverError && (
         <div
-          className="rounded-xl border border-red-300 bg-red-50 px-3 py-2.5 text-sm font-medium text-brand-danger"
+          className={ERROR_STYLES[serverError.kind]}
           role="alert"
         >
-          {serverError}
+          {serverError.content}
         </div>
       )}
 

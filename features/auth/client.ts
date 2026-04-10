@@ -13,7 +13,10 @@ export class LoginError extends Error {
 }
 
 export class RegisterError extends Error {
-  constructor(message: string) {
+  constructor(
+    message: string,
+    public readonly statusCode: number,
+  ) {
     super(message);
     this.name = 'RegisterError';
   }
@@ -59,6 +62,7 @@ export async function register(
   if (!response.ok) {
     throw new RegisterError(
       data?.message ?? 'No fue posible completar el registro.',
+      response.status,
     );
   }
 
