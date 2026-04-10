@@ -7,8 +7,10 @@ import { SESSION_COOKIE_NAME } from '@/features/auth/constants';
  * Routes that do not require an active session.
  * The root path `/` is intentionally public so unauthenticated users can land
  * on the marketing/splash page rather than being bounced to /login immediately.
+ * `/register/confirm-email` is public because the user has just registered but
+ * Supabase does not emit a session until email confirmation is complete.
  */
-const PUBLIC_PATHS = new Set(['/login', '/register', '/']);
+const PUBLIC_PATHS = new Set(['/login', '/register', '/register/confirm-email', '/']);
 
 /**
  * Routes where an already-authenticated user should not linger.
