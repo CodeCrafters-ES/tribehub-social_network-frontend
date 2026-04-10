@@ -1,6 +1,6 @@
 import { redirect } from 'next/navigation';
 
-import { isAuthenticated } from '@/lib/auth/server-session';
+import { isAuthenticated } from '@/features/auth/server-session';
 
 export default async function FeedPage() {
   const authenticated = await isAuthenticated();

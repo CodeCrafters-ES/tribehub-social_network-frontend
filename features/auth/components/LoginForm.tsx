@@ -4,9 +4,9 @@ import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useState, type FormEvent } from 'react';
 
-import Button from '@/components/ui/Button';
-import Input from '@/components/ui/Input';
-import { login, LoginError } from '@/lib/auth/client';
+import Button from '@/shared/ui/Button';
+import Input from '@/shared/ui/Input';
+import { login, LoginError } from '@/features/auth/client';
 
 type LoginFormValues = {
   email: string;

@@ -1,7 +1,7 @@
 import { redirect } from 'next/navigation';
 
-import RegisterForm from '@/components/auth/RegisterForm';
-import { isAuthenticated } from '@/lib/auth/server-session';
+import RegisterForm from '@/features/auth/components/RegisterForm';
+import { isAuthenticated } from '@/features/auth/server-session';
 
 export default async function RegisterPage() {
   const authenticated = await isAuthenticated();

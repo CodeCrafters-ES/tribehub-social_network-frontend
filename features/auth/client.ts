@@ -3,7 +3,7 @@ import type {
   LoginResult,
   RegisterPayload,
   RegisterResult,
-} from '@/lib/auth/types';
+} from '@/features/auth/types';
 
 export class LoginError extends Error {
   constructor(message: string) {

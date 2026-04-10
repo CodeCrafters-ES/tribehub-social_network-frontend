@@ -3,8 +3,8 @@ import { NextResponse } from 'next/server';
 import {
   SESSION_COOKIE_NAME,
   SESSION_MAX_AGE_SECONDS,
-} from '@/lib/auth/constants';
-import type { BackendAuthResponse, RegisterPayload } from '@/lib/auth/types';
+} from '@/features/auth/constants';
+import type { BackendAuthResponse, RegisterPayload } from '@/features/auth/types';
 
 function getBackendBaseUrl(): string {
   return process.env.AUTH_API_BASE_URL ?? process.env.NEXT_PUBLIC_API_BASE_URL ?? '';

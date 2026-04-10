@@ -4,9 +4,9 @@ import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState, type FormEvent } from 'react';
 
-import Button from '@/components/ui/Button';
-import Input from '@/components/ui/Input';
-import { register, RegisterError } from '@/lib/auth/client';
+import Button from '@/shared/ui/Button';
+import Input from '@/shared/ui/Input';
+import { register, RegisterError } from '@/features/auth/client';
 
 type RegisterFormValues = {
   username: string;
