@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
 import { useRouter } from 'next/navigation';
 import Button from '@/shared/ui/Button';
 import Input from '@/shared/ui/Input';
@@ -12,23 +11,10 @@ import {
   ProfileResponse,
   UpdateProfilePayload,
 } from '@/services/api/profile';
+import { profileSchema, type ProfileFormValues } from './schema';
 
 // Constants
 const ONBOARDING_NEXT_STEP = '/feed';
-
-// Validation schema - match LoginForm pattern (all required, no defaults in schema)
-const profileSchema = z.object({
-  displayName: z
-    .string()
-    .min(2, 'El nombre debe tener al menos 2 caracteres.')
-    .max(50, 'El nombre no debe exceder los 50 caracteres.'),
-  bio: z.string().max(280, 'La biografía no debe exceder los 280 caracteres.'),
-  avatarUrl: z.string(),
-  isPublic: z.boolean(),
-});
-
-// Define form values type - match what LoginForm does
-type ProfileFormValues = z.infer<typeof profileSchema>;
 
 export default function ProfilePage() {
   const router = useRouter();
