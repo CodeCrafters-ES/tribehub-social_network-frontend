@@ -1,9 +1,5 @@
 /**
- * Profile API service — usa el route handler BFF interno (/api/v1/profile).
- *
- * El backend espera Authorization: Bearer pero el frontend usa cookie httpOnly.
- * El route handler /api/v1/profile valida la cookie server-side y la reenvía
- * como Bearer al backend.
+ * Profile API service — uses BFF route internally (/api/v1/profile).
  */
 
 export interface ProfileResponse {
@@ -28,8 +24,14 @@ const getProfile = async (): Promise<ProfileResponse> => {
     credentials: 'same-origin',
   });
 
+  const status = response.status;
+
   if (!response.ok) {
-    throw new Error('Failed to fetch profile');
+    const error = new Error('Failed to fetch profile') as Error & {
+      status?: number;
+    };
+    error.status = status;
+    throw error;
   }
 
   return response.json();
@@ -48,7 +50,11 @@ const updateProfile = async (
   });
 
   if (!response.ok) {
-    throw new Error('Failed to update profile');
+    const error = new Error('Failed to update profile') as Error & {
+      status?: number;
+    };
+    error.status = response.status;
+    throw error;
   }
 
   return response.json();
@@ -59,5 +65,4 @@ export const profileApi = {
   updateProfile,
 };
 
-// Named exports for tests
 export { getProfile, updateProfile };

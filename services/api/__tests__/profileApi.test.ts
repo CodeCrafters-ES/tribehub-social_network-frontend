@@ -1,13 +1,7 @@
-// jest.mock paths must resolve at hoist time — use paths relative to this file.
-jest.mock('../apiClient', () => ({
-  apiClient: {
-    get: jest.fn(),
-    patch: jest.fn(),
-  },
-}));
+// Mock fetch globally
+const mockFetch = jest.fn();
+global.fetch = mockFetch;
 
-// Import after mock registration so the tests pick up the mocked module.
-import { apiClient } from '../apiClient';
 import { profileApi, getProfile, updateProfile } from '../profile';
 import type { ProfileResponse, UpdateProfilePayload } from '../profile';
 
@@ -33,47 +27,60 @@ describe('Profile API Service', () => {
   });
 
   describe('getProfile', () => {
-    it('should call apiClient.get with correct endpoint and return profile data', async () => {
-      (apiClient.get as jest.Mock).mockResolvedValueOnce({
-        data: mockProfileData,
-      });
+    it('should call /api/v1/profile and return profile data', async () => {
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        status: 200,
+        json: async () => mockProfileData,
+      } as Response);
 
       const result = await getProfile();
 
-      expect(apiClient.get).toHaveBeenCalledTimes(1);
-      expect(apiClient.get).toHaveBeenCalledWith('/v1/profile/me');
+      expect(mockFetch).toHaveBeenCalledTimes(1);
+      expect(mockFetch).toHaveBeenCalledWith('/api/v1/profile', {
+        method: 'GET',
+        credentials: 'same-origin',
+      });
       expect(result).toEqual(mockProfileData);
     });
 
-    it('should handle apiClient.get errors', async () => {
-      const mockError = new Error('API Error');
-      (apiClient.get as jest.Mock).mockRejectedValueOnce(mockError);
+    it('should throw error with status when response is not ok', async () => {
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        status: 500,
+      } as Response);
 
-      await expect(getProfile()).rejects.toThrow(mockError);
+      await expect(getProfile()).rejects.toThrow();
     });
   });
 
   describe('updateProfile', () => {
-    it('should call apiClient.patch with correct endpoint and payload', async () => {
-      (apiClient.patch as jest.Mock).mockResolvedValueOnce({
-        data: mockProfileData,
-      });
+    it('should call /api/v1/profile with PATCH and return updated data', async () => {
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        status: 200,
+        json: async () => mockProfileData,
+      } as Response);
 
       const result = await updateProfile(mockUpdatePayload);
 
-      expect(apiClient.patch).toHaveBeenCalledTimes(1);
-      expect(apiClient.patch).toHaveBeenCalledWith(
-        '/v1/profile/me',
-        mockUpdatePayload,
-      );
+      expect(mockFetch).toHaveBeenCalledTimes(1);
+      expect(mockFetch).toHaveBeenCalledWith('/api/v1/profile', {
+        method: 'PATCH',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(mockUpdatePayload),
+        credentials: 'same-origin',
+      });
       expect(result).toEqual(mockProfileData);
     });
 
-    it('should handle apiClient.patch errors', async () => {
-      const mockError = new Error('API Error');
-      (apiClient.patch as jest.Mock).mockRejectedValueOnce(mockError);
+    it('should throw error with status when response is not ok', async () => {
+      mockFetch.mockResolvedValueOnce({
+        ok: false,
+        status: 400,
+      } as Response);
 
-      await expect(updateProfile(mockUpdatePayload)).rejects.toThrow(mockError);
+      await expect(updateProfile(mockUpdatePayload)).rejects.toThrow();
     });
   });
 
@@ -84,26 +91,33 @@ describe('Profile API Service', () => {
     });
 
     it('getProfile should delegate to the getProfile function', async () => {
-      (apiClient.get as jest.Mock).mockResolvedValueOnce({
-        data: mockProfileData,
-      });
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        status: 200,
+        json: async () => mockProfileData,
+      } as Response);
 
       const result = await profileApi.getProfile();
 
-      expect(apiClient.get).toHaveBeenCalledWith('/v1/profile/me');
+      expect(mockFetch).toHaveBeenCalledWith(
+        '/api/v1/profile',
+        expect.any(Object),
+      );
       expect(result).toEqual(mockProfileData);
     });
 
     it('updateProfile should delegate to the updateProfile function', async () => {
-      (apiClient.patch as jest.Mock).mockResolvedValueOnce({
-        data: mockProfileData,
-      });
+      mockFetch.mockResolvedValueOnce({
+        ok: true,
+        status: 200,
+        json: async () => mockProfileData,
+      } as Response);
 
       const result = await profileApi.updateProfile(mockUpdatePayload);
 
-      expect(apiClient.patch).toHaveBeenCalledWith(
-        '/v1/profile/me',
-        mockUpdatePayload,
+      expect(mockFetch).toHaveBeenCalledWith(
+        '/api/v1/profile',
+        expect.any(Object),
       );
       expect(result).toEqual(mockProfileData);
     });

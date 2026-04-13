@@ -73,11 +73,12 @@ export default function ProfilePage() {
       })
       .catch((err: unknown) => {
         // 404 means new user - show empty form (normal, not an error)
-        const axiosErr = err as { response?: { status?: number } };
-        const isNotFound = axiosErr.response?.status === 404;
+        const errorWithStatus = err as { status?: number };
+        const isNotFound = errorWithStatus.status === 404;
 
         // Only show error for actual connection/server issues
         if (!isNotFound) {
+          console.error('Error loading profile:', err);
           setApiError('No pudimos cargar tu perfil. Intenta de nuevo.');
         }
       })
