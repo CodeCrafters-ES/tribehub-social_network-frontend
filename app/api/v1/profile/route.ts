@@ -35,8 +35,18 @@ export async function GET() {
     });
 
     if (!response.ok) {
+      // Include backend error message for debugging
+      let errorData;
+      try {
+        errorData = await response.json();
+      } catch {
+        errorData = { message: 'Unknown error' };
+      }
       return NextResponse.json(
-        { message: 'Error fetching profile' },
+        {
+          message: 'Error fetching profile',
+          backendError: errorData,
+        },
         { status: response.status },
       );
     }
@@ -77,8 +87,18 @@ export async function PATCH(request: Request) {
     });
 
     if (!response.ok) {
+      // Include backend error message for debugging
+      let errorData;
+      try {
+        errorData = await response.json();
+      } catch {
+        errorData = { message: 'Unknown error' };
+      }
       return NextResponse.json(
-        { message: 'Error updating profile' },
+        {
+          message: 'Error updating profile',
+          backendError: errorData,
+        },
         { status: response.status },
       );
     }

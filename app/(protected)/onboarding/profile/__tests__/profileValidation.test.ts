@@ -1,13 +1,18 @@
 import { profileSchema } from '../schema';
 
+/**
+ * Tests must match backend DTO validation.
+ * Key changes from original:
+ * - bio: max 160 chars (was 280)
+ * - avatarUrl: must be valid URL (was flexible string)
+ * - isPublic: removed (not in backend DTO)
+ */
+
 describe('Profile Form Validation Schema', () => {
   describe('displayName validation', () => {
     it('should require at least 2 characters', () => {
       const result = profileSchema.safeParse({
         displayName: 'A', // Too short
-        bio: '',
-        avatarUrl: '',
-        isPublic: true,
       });
 
       expect(result.success).toBe(false);
@@ -16,9 +21,6 @@ describe('Profile Form Validation Schema', () => {
     it('should allow exactly 2 characters', () => {
       const result = profileSchema.safeParse({
         displayName: 'AB',
-        bio: '',
-        avatarUrl: '',
-        isPublic: true,
       });
 
       expect(result.success).toBe(true);
@@ -27,9 +29,6 @@ describe('Profile Form Validation Schema', () => {
     it('should require at most 50 characters', () => {
       const result = profileSchema.safeParse({
         displayName: 'A'.repeat(51),
-        bio: '',
-        avatarUrl: '',
-        isPublic: true,
       });
 
       expect(result.success).toBe(false);
@@ -38,9 +37,6 @@ describe('Profile Form Validation Schema', () => {
     it('should allow exactly 50 characters', () => {
       const result = profileSchema.safeParse({
         displayName: 'A'.repeat(50),
-        bio: '',
-        avatarUrl: '',
-        isPublic: true,
       });
 
       expect(result.success).toBe(true);
@@ -49,9 +45,6 @@ describe('Profile Form Validation Schema', () => {
     it('should reject empty displayName', () => {
       const result = profileSchema.safeParse({
         displayName: '',
-        bio: '',
-        avatarUrl: '',
-        isPublic: true,
       });
 
       expect(result.success).toBe(false);
@@ -63,30 +56,33 @@ describe('Profile Form Validation Schema', () => {
       const result = profileSchema.safeParse({
         displayName: 'Test User',
         bio: '',
-        avatarUrl: '',
-        isPublic: true,
       });
 
       expect(result.success).toBe(true);
     });
 
-    it('should allow bio within 280 characters', () => {
+    it('should allow undefined bio', () => {
       const result = profileSchema.safeParse({
         displayName: 'Test User',
-        bio: 'A'.repeat(280),
-        avatarUrl: '',
-        isPublic: true,
+        bio: undefined,
       });
 
       expect(result.success).toBe(true);
     });
 
-    it('should reject bio over 280 characters', () => {
+    it('should allow bio within 160 characters', () => {
       const result = profileSchema.safeParse({
         displayName: 'Test User',
-        bio: 'A'.repeat(281),
-        avatarUrl: '',
-        isPublic: true,
+        bio: 'A'.repeat(160),
+      });
+
+      expect(result.success).toBe(true);
+    });
+
+    it('should reject bio over 160 characters', () => {
+      const result = profileSchema.safeParse({
+        displayName: 'Test User',
+        bio: 'A'.repeat(161),
       });
 
       expect(result.success).toBe(false);
@@ -94,12 +90,10 @@ describe('Profile Form Validation Schema', () => {
   });
 
   describe('avatarUrl validation', () => {
-    it('should accept any string for avatarUrl (flexible - backend validates)', () => {
+    it('should allow valid URL', () => {
       const result = profileSchema.safeParse({
         displayName: 'Test User',
-        bio: '',
-        avatarUrl: 'not-a-valid-url', // Backend handles validation
-        isPublic: true,
+        avatarUrl: 'https://example.com/avatar.jpg',
       });
 
       expect(result.success).toBe(true);
@@ -108,47 +102,28 @@ describe('Profile Form Validation Schema', () => {
     it('should allow undefined avatarUrl (optional)', () => {
       const result = profileSchema.safeParse({
         displayName: 'Test User',
-        bio: '',
         avatarUrl: undefined,
-        isPublic: true,
       });
 
       expect(result.success).toBe(true);
     });
-  });
 
-  describe('isPublic validation', () => {
-    it('should require boolean value', () => {
+    it('should allow empty avatarUrl', () => {
       const result = profileSchema.safeParse({
         displayName: 'Test User',
-        bio: '',
         avatarUrl: '',
-        isPublic: 'true', // String instead of boolean
+      });
+
+      expect(result.success).toBe(true);
+    });
+
+    it('should reject invalid URL', () => {
+      const result = profileSchema.safeParse({
+        displayName: 'Test User',
+        avatarUrl: 'not-a-valid-url',
       });
 
       expect(result.success).toBe(false);
-    });
-
-    it('should allow true', () => {
-      const result = profileSchema.safeParse({
-        displayName: 'Test User',
-        bio: '',
-        avatarUrl: '',
-        isPublic: true,
-      });
-
-      expect(result.success).toBe(true);
-    });
-
-    it('should allow false', () => {
-      const result = profileSchema.safeParse({
-        displayName: 'Test User',
-        bio: '',
-        avatarUrl: '',
-        isPublic: false,
-      });
-
-      expect(result.success).toBe(true);
     });
   });
 
@@ -158,7 +133,14 @@ describe('Profile Form Validation Schema', () => {
         displayName: 'Test User',
         bio: 'This is my bio',
         avatarUrl: 'https://example.com/avatar.jpg',
-        isPublic: true,
+      });
+
+      expect(result.success).toBe(true);
+    });
+
+    it('should accept profile with only required fields', () => {
+      const result = profileSchema.safeParse({
+        displayName: 'Test User',
       });
 
       expect(result.success).toBe(true);

@@ -16,6 +16,28 @@ import { profileSchema, type ProfileFormValues } from './schema';
 // Constants
 const ONBOARDING_NEXT_STEP = '/feed';
 
+/**
+ * Cleans payload to match backend DTO.
+ * - Removes empty strings and undefined values
+ * - Only sends fields that backend expects
+ */
+function cleanPayload(values: ProfileFormValues): UpdateProfilePayload {
+  const payload: UpdateProfilePayload = {
+    displayName: values.displayName,
+  };
+
+  // Only add optional fields if they have meaningful values
+  if (values.bio && values.bio.trim()) {
+    payload.bio = values.bio.trim();
+  }
+
+  if (values.avatarUrl && values.avatarUrl.trim()) {
+    payload.avatarUrl = values.avatarUrl.trim();
+  }
+
+  return payload;
+}
+
 export default function ProfilePage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
@@ -26,19 +48,14 @@ export default function ProfilePage() {
     handleSubmit,
     formState: { errors, isSubmitting },
     reset,
-    setValue,
-    watch,
   } = useForm<ProfileFormValues>({
     resolver: zodResolver(profileSchema),
     defaultValues: {
       displayName: '',
-      bio: '',
-      avatarUrl: '',
-      isPublic: true,
+      bio: undefined,
+      avatarUrl: undefined,
     },
   });
-
-  const isPublic = watch('isPublic');
 
   // Fetch profile on mount
   useEffect(() => {
@@ -52,9 +69,8 @@ export default function ProfilePage() {
         }
         reset({
           displayName: data.displayName ?? '',
-          bio: data.bio ?? '',
-          avatarUrl: data.avatarUrl ?? '',
-          isPublic: data.isPublic ?? true,
+          bio: data.bio ?? undefined,
+          avatarUrl: data.avatarUrl ?? undefined,
         });
       })
       .catch((err: unknown) => {
@@ -73,10 +89,14 @@ export default function ProfilePage() {
 
   const onSubmit = async (values: ProfileFormValues) => {
     setApiError(null);
+    // Clean payload to match backend DTO (no isPublic, no empty strings)
+    const payload = cleanPayload(values);
+
     try {
-      await profileApi.updateProfile(values as UpdateProfilePayload);
+      await profileApi.updateProfile(payload);
       router.replace(ONBOARDING_NEXT_STEP);
     } catch (error) {
+      console.error('Error updating profile:', error);
       setApiError('Error al guardar tu perfil. Intenta de nuevo.');
     }
   };
@@ -135,7 +155,7 @@ export default function ProfilePage() {
             <textarea
               id="bio"
               rows={4}
-              placeholder="Cuéntanos sobre ti (máx. 280 caracteres)"
+              placeholder="Cuéntanos sobre ti (máx. 160 caracteres)"
               className={[
                 'rounded-md border px-3 py-2 text-sm outline-none transition-colors',
                 'bg-white dark:bg-slate-900',
@@ -156,7 +176,7 @@ export default function ProfilePage() {
                 id="bio-hint"
                 className="text-xs text-slate-500 dark:text-slate-400"
               >
-                Cuéntanos sobre ti (máx. 280 caracteres)
+                Cuéntanos sobre ti (máx. 160 caracteres)
               </p>
             )}
             {errors.bio && (
@@ -177,22 +197,6 @@ export default function ProfilePage() {
             error={errors.avatarUrl?.message}
             {...register('avatarUrl')}
           />
-
-          <div className="flex items-start space-x-3">
-            <input
-              id="isPublic"
-              type="checkbox"
-              checked={isPublic ?? true}
-              onChange={(e) => setValue('isPublic', e.target.checked)}
-              className="h-4 w-4 text-brand-accent focus:ring-brand-accent border-brand-border rounded"
-            />
-            <label
-              htmlFor="isPublic"
-              className="mt-0.5 text-sm text-brand-textMuted"
-            >
-              Perfil público (visible para todos)
-            </label>
-          </div>
 
           <Button type="submit" isLoading={isSubmitting} className="w-full">
             Guardar y continuar

@@ -1,21 +1,24 @@
 /**
  * Profile API service — uses BFF route internally (/api/v1/profile).
+ *
+ * IMPORTANT: Types must match backend DTO (src/modules/profile/dto/update-profile.dto.ts)
+ * - displayName: required, 2-50 chars
+ * - bio: optional, max 160 chars
+ * - avatarUrl: optional, must be valid URL
  */
 
 export interface ProfileResponse {
   id: string;
   userId: string;
   displayName: string;
-  bio: string;
-  avatarUrl: string | null;
-  isPublic: boolean;
+  bio?: string;
+  avatarUrl?: string;
 }
 
 export interface UpdateProfilePayload {
-  displayName?: string;
+  displayName: string;
   bio?: string;
-  avatarUrl?: string | null;
-  isPublic?: boolean;
+  avatarUrl?: string;
 }
 
 const getProfile = async (): Promise<ProfileResponse> => {
