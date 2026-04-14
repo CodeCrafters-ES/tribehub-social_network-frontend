@@ -13,11 +13,15 @@ Incluye funcionalidades como autenticación, publicaciones, comentarios, perfile
 [![NextJS](https://img.shields.io/badge/NextJS-16.2.1-orange)](https://nextjs.org/)
 [![Tailwind CSS](https://img.shields.io/badge/tailwindcss-%5E4-06B6D4)](https://tailwindcss.com/)
 
-> **Estado del deploy:** El despliegue en Netlify está pendiente. Aún no existe una URL de producción pública.
+## Deploy
+
+[Producción](https://tribehub.app/)
+
+[Preproducción](https://staging.tribehub.app/) (Próximamente)
 
 ---
 
-## 🔹 **Funcionalidades — Hito 1 MVP Crítico** *(en construcción)*
+## 🔹 **Funcionalidades — Hito 1 MVP Crítico** _(en construcción)_
 
 - Autenticación: registro y login con confirmación de email (Supabase)
 - Onboarding: selección de intereses al crear la cuenta
@@ -30,17 +34,17 @@ Incluye funcionalidades como autenticación, publicaciones, comentarios, perfile
 
 ## 🛠️ Stack técnico
 
-| Tecnología | Versión | Rol |
-|---|---|---|
-| Next.js (App Router) | 16.2.1 | Framework SSR + routing |
-| React | 19 | Capa de UI |
-| TypeScript | — | Tipado estático |
-| TanStack Query | — | Fetching y caché en cliente |
-| Axios | — | Cliente HTTP con interceptores |
-| react-hook-form + zod | — | Formularios y validación |
-| Tailwind CSS | v4 | Estilos (sin `tailwind.config.js`) |
-| bun | — | Package manager y runner |
-| Netlify | — | Deploy objetivo (preview por PR) |
+| Tecnología            | Versión | Rol                                |
+| --------------------- | ------- | ---------------------------------- |
+| Next.js (App Router)  | 16.2.1  | Framework SSR + routing            |
+| React                 | 19      | Capa de UI                         |
+| TypeScript            | —       | Tipado estático                    |
+| TanStack Query        | —       | Fetching y caché en cliente        |
+| Axios                 | —       | Cliente HTTP con interceptores     |
+| react-hook-form + zod | —       | Formularios y validación           |
+| Tailwind CSS          | v4      | Estilos (sin `tailwind.config.js`) |
+| bun                   | —       | Package manager y runner           |
+| Netlify               | —       | Deploy objetivo (preview por PR)   |
 
 ---
 
