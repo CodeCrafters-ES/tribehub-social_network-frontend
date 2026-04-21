@@ -53,7 +53,7 @@ export async function GET() {
 
     const data = await response.json();
     return NextResponse.json(data, { status: 200 });
-  } catch (error) {
+  } catch (_error) {
     return NextResponse.json(
       { message: 'Network error fetching profile' },
       { status: 503 },
@@ -105,7 +105,7 @@ export async function PATCH(request: Request) {
 
     const data = await response.json();
     return NextResponse.json(data, { status: 200 });
-  } catch (error) {
+  } catch (_error) {
     return NextResponse.json(
       { message: 'Network error updating profile' },
       { status: 503 },
