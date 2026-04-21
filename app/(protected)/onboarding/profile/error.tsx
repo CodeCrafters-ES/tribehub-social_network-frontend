@@ -2,6 +2,8 @@
 
 import { useEffect } from 'react';
 
+import Button from '@/shared/ui/Button';
+
 export default function ErrorBoundary({
   reset,
   error,
@@ -27,12 +29,7 @@ export default function ErrorBoundary({
           </p>
         </div>
 
-        <button
-          onClick={() => reset()}
-          className="rounded-md border px-4 py-2 text-sm font-medium transition-colors hover:bg-brand-accentHover focus:outline-none focus:ring-2 focus:ring-brand-accent focus:ring-offset-2 bg-brand-accent text-white hover:text-brand-accentHover"
-        >
-          Intentar nuevamente
-        </button>
+        <Button onClick={() => reset()}>Intentar nuevamente</Button>
 
         <p className="mt-2 text-xs text-brand-textMuted">
           Si el problema persiste, contacta al soporte.
