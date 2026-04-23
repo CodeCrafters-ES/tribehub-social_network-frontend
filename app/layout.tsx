@@ -32,7 +32,7 @@ export default function RootLayout({
         <meta charSet="utf-8" />
         <meta name="theme-color" content="#000000" />
       </head>
-      <body className="min-h-screen bg-white dark:bg-slate-950">
+      <body className="min-h-screen">
         <a href="#main-content" className="sr-only">
           Ir al contenido principal
         </a>
