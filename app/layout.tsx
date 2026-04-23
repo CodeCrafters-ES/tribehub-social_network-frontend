@@ -8,7 +8,7 @@ export const viewport: Viewport = {
 
 export const metadata: Metadata = {
   title: 'TribeHub | Social Network',
-  description: 'Conecta con el mundo de una nueva manera',
+  description: 'Social network for communities',
   keywords: ['social network', 'tribehub', 'community'],
   robots: 'index, follow',
   appleWebApp: {
@@ -30,9 +30,9 @@ export default function RootLayout({
     <html lang="es" suppressHydrationWarning>
       <head>
         <meta charSet="utf-8" />
-        <meta name="theme-color" content="#000000" />
+        <meta name="theme-color" content="#2c6e49" />
       </head>
-      <body className="min-h-screen">
+      <body className="min-h-screen antialiased">
         <a href="#main-content" className="sr-only">
           Ir al contenido principal
         </a>

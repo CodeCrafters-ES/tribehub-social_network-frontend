@@ -18,66 +18,98 @@ Incluye funcionalidades como autenticación, publicaciones, comentarios y perfil
 ---
 
 [![Sitio Web en Vivo](https://img.shields.io/badge/🌐-Visitar_Sitio-2EA44F)](https://turedsocial.com)  
-[![Demo](https://img.shields.io/badge/🎥-Ver_Demo-FF0000)](https://youtu.be/ejemplo-demo)  
+[![Demo](https://img.shields.io/badge/🎥-Ver_Demo-FF0000)](https://youtu.be/ejemplo-demo)
 
 ---
 
 ## 🔹 **Funcionalidades clave**
 
-- Publica fotos, textos y enlaces.  
+- Publica fotos, textos y enlaces.
 - Conecta con amigos.
-- Descubre comunidades temáticas.  
+- Descubre comunidades temáticas.
 
 ---
 
 ## 🤝 Contribución
 
 Para conocer las pautas detalladas de contribución, consulta el archivo [CONTRIBUTING.md](CONTRIBUTING.md).  
-*(Haz clic en el enlace para ir directamente a las guías)*
+_(Haz clic en el enlace para ir directamente a las guías)_
 
 ---
 
-## 🖥️ Cómo Usar la Aplicación  
+## 🖥️ Cómo Usar la Aplicación
 
 ### Opción 1: Acceder Online (Recomendado)
 
-Simplemente visita **[https://tribehub.app](https://tribehub.app)** en tu navegador (Chrome, Firefox o Edge).  
+Simplemente visita **[https://tribehub.app](https://tribehub.app)** en tu navegador (Chrome, Firefox o Edge).
 
 ### Opción 2: Ejecutar Localmente (Para Testing)
 
-Si quieres probar la app en tu máquina:  
+Si quieres probar la app en tu máquina:
 
-1. **Descarga los archivos**:
-
-- Opción A: Clona el repositorio (*solo si tienes Git*):  
+1. **Clona el repositorio**:
 
 ```bash
 git clone https://github.com/CodeCrafters-ES/social-network-webapp-frontend.git
-```  
+cd social-network-webapp-frontend
+```
 
-- Opción B: [Descarga el ZIP](https://github.com/tu-usuario/turedsocial/archive/main.zip) y descomprímelo.  
+2. **Instala Bun** (si aún no lo tienes):
 
-2. **Abre el archivo de construcción**:
+```bash
+curl -fsSL https://bun.sh/install | bash
+```
 
-- Navega a la carpeta `dist/` y abre `index.html` en tu navegador.  
+3. **Instala las dependencias**:
 
-⚠️ *Nota*: Algunas funcionalidades (como autenticación) pueden no funcionar en local sin configuración adicional.  
+```bash
+bun install
+```
+
+4. **Configura las variables de entorno**:
+
+Copia el archivo de ejemplo y ajusta los valores según tu entorno:
+
+```bash
+cp .env.example .env
+```
+
+El archivo `.env` contiene la URL del backend de autenticación (login y registro):
+
+```
+AUTH_API_BASE_URL=http://localhost:8080
+```
+
+5. **Levanta el servidor de desarrollo**:
+
+```bash
+bun run dev
+```
+
+La aplicación estará disponible en [http://localhost:3000](http://localhost:3000).
+
+Las rutas de autenticación disponibles son:
+
+- `/login` — Inicio de sesión
+- `/register` — Registro de usuario
+
+⚠️ _Nota_: Para que el login y registro funcionen correctamente, el backend de autenticación debe estar corriendo en la URL configurada en `AUTH_API_BASE_URL`.
 
 ---
 
 ## 📱 Dispositivos Soportados
 
-- **Navegadores**: Chrome ≥ v115, Firefox ≥ v110, Safari ≥ v15.  
-- **Móvil**: Accede desde cualquier smartphone (Android/iOS) via navegador.  
+- **Navegadores**: Chrome ≥ v115, Firefox ≥ v110, Safari ≥ v15.
+- **Móvil**: Accede desde cualquier smartphone (Android/iOS) via navegador.
 
 ---
 
 ## 🆘 Soporte Técnico
 
-¿Problemas al acceder?  
+¿Problemas al acceder?
 
 - Verifica tu conexión a Internet.
-- Limpia la caché del navegador.  
+- Limpia la caché del navegador.
 - Contáctanos <!--en [soporte@turedsocial.com](mailto:soporte@turedsocial.com). -->
 
 ---
@@ -85,4 +117,4 @@ git clone https://github.com/CodeCrafters-ES/social-network-webapp-frontend.git
 ## 📜 Licencia
 
 Este proyecto es de código abierto bajo licencia [MIT](LICENSE).  
-© 2025 CodeCrafters - ES
+© 2026 CodeCrafters - ES
