@@ -1,11 +1,11 @@
 const CHIP_COLORS = {
   violet: {
-    selected: 'bg-violet-300 text-purple-900',
-    normal: 'bg-violet-100 text-violet-900',
+    selected: 'bg-rose-200 text-rose-900',
+    normal: 'bg-rose-100 text-rose-900',
   },
   indigo: {
-    selected: 'bg-indigo-500 text-white',
-    normal: 'bg-violet-100 text-violet-900',
+    selected: 'bg-rose-500 text-white',
+    normal: 'bg-rose-100 text-rose-900',
   },
 } as const;
 

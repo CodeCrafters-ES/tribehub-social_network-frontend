@@ -7,6 +7,7 @@ export default function Spinner({
 }) {
   return (
     <svg
+      data-testid="spinner"
       style={{ width: `${size}px`, height: `${size}px` }}
       className={`-ml-1 animate-spin text-${color}`}
       xmlns="http://www.w3.org/2000/svg"

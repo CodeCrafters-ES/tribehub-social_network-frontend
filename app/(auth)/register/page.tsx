@@ -7,7 +7,7 @@ export default async function RegisterPage() {
   const authenticated = await isAuthenticated();
 
   if (authenticated) {
-    redirect('/feed');
+    redirect('/onboarding/interests');
   }
 
   return (

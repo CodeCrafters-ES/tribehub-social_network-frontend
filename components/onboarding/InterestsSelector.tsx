@@ -8,12 +8,12 @@ import {
   listCategories,
 } from '@/lib/api/interests';
 import { groupInterests } from '@/lib/utils/groupInterests';
-import Chip from '@/components/ui/Chip';
+import Chip from '@/shared/ui/Chip';
 import { useRouter } from 'next/navigation';
-import Button from '../ui/Button';
 import { Category, Interest } from '@/lib/types/interests';
 import { ArrowRight, Search } from 'lucide-react';
-import Spinner from '../ui/Spinner';
+import Spinner from '../../shared/ui/Spinner';
+import Button from '@/shared/ui/Button';
 
 export default function InterestsSelector() {
   const router = useRouter();
@@ -41,7 +41,7 @@ export default function InterestsSelector() {
       } catch {
         setError('Error cargando intereses');
       } finally {
-        // setLoading(false);
+        setLoading(false);
       }
     }
     load();
@@ -80,15 +80,15 @@ export default function InterestsSelector() {
 
   if (loading)
     return (
-      <div className="flex justify-center items-center h-full">
-        <Spinner size={32} color="violet-900" />
+      <div className="flex-1 flex justify-center items-center">
+        <Spinner size={32} color="rose-900" data-testid="spinner" />
       </div>
     );
   if (error) return <div>{error}</div>;
 
   return (
     <div className="space-y-4 p-4">
-      <div className="relative w-full text-violet-900 focus-within:text-violet-900">
+      <div className="relative w-full text-rose-900 focus-within:text-rose-900">
         <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
           <Search size={20} strokeWidth={2.5} />
         </div>
@@ -98,7 +98,7 @@ export default function InterestsSelector() {
           placeholder="Buscar..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="w-full p-3 pl-10 rounded-lg bg-violet-100 placeholder-violet-900 text-gray-900 outline-none focus:ring-2 focus:ring-violet-300 transition-all"
+          className="w-full p-3 pl-10 rounded-lg bg-rose-100 placeholder-rose-900 text-gray-900 outline-none focus:ring-2 focus:ring-rose-200 transition-all"
         />
       </div>
 
@@ -147,15 +147,11 @@ export default function InterestsSelector() {
         <Button
           onClick={handleSave}
           disabled={selectedIds.length < 3 || saving}
-          rightIcon={
-            saving ? (
-              <Spinner size={5} color="white" />
-            ) : (
-              <ArrowRight size={18} />
-            )
-          }
+          rightIcon={saving ? <Spinner /> : <ArrowRight />}
+          iconOnly={saving}
+          data-testid="save-button"
         >
-          {saving ? 'Guardando...' : 'Guardar y continuar'}
+          {saving ? '' : 'Guardar y continuar'}
         </Button>
       </div>
     </div>

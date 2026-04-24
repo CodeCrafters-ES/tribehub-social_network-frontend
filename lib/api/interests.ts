@@ -5,11 +5,11 @@ import {
 } from '../mocks/interests';
 import { Category, Interest } from '../types/interests';
 
-const USE_MOCK = process.env.NEXT_PUBLIC_USE_MOCK === 'true';
+const getUseMock = () => process.env.NEXT_PUBLIC_USE_MOCK === 'true';
 const API_URL = process.env.NEXT_PUBLIC_API_BASE_URL;
 
 export async function listInterests(category?: string): Promise<Interest[]> {
-  if (USE_MOCK) {
+  if (getUseMock()) {
     await new Promise((r) => setTimeout(r, 300));
 
     if (!category) return MOCK_INTERESTS;
@@ -29,7 +29,7 @@ export async function listInterests(category?: string): Promise<Interest[]> {
 }
 
 export async function listCategories(): Promise<Category[]> {
-  if (USE_MOCK) {
+  if (getUseMock()) {
     await new Promise((r) => setTimeout(r, 2000));
     return MOCK_CATEGORIES;
   }
@@ -43,7 +43,7 @@ export async function listCategories(): Promise<Category[]> {
 }
 
 export async function getMyInterests(): Promise<string[]> {
-  if (USE_MOCK) {
+  if (getUseMock()) {
     await new Promise((r) => setTimeout(r, 2000));
     return MOCK_SELECTED;
   }
@@ -56,7 +56,7 @@ export async function getMyInterests(): Promise<string[]> {
 }
 
 export async function setMyInterests(interestIds: string[]) {
-  if (USE_MOCK) {
+  if (getUseMock()) {
     await new Promise((r) => setTimeout(r, 2000));
 
     MOCK_SELECTED.length = 0;
