@@ -57,16 +57,15 @@ describe('interests API', () => {
     let getMyInterests: () => Promise<string[]>;
     let setMyInterests: (interestIds: string[]) => Promise<void>;
 
-    beforeEach(() => {
+    beforeEach(async () => {
       process.env.NEXT_PUBLIC_USE_MOCK = 'false';
       process.env.NEXT_PUBLIC_API_BASE_URL = 'http://api.example.com';
-      jest.isolateModules(() => {
-        const mod = require('../interests');
-        listInterests = mod.listInterests;
-        listCategories = mod.listCategories;
-        getMyInterests = mod.getMyInterests;
-        setMyInterests = mod.setMyInterests;
-      });
+      jest.resetModules();
+      const mod = await import('../interests');
+      listInterests = mod.listInterests;
+      listCategories = mod.listCategories;
+      getMyInterests = mod.getMyInterests;
+      setMyInterests = mod.setMyInterests;
       (global.fetch as jest.Mock).mockClear();
     });
 

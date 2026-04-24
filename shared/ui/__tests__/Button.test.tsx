@@ -1,6 +1,5 @@
 import { render, screen, fireEvent } from '@testing-library/react';
 import Button from '../Button';
-import Spinner from '../Spinner';
 
 describe('Button', () => {
   it('renders with children', () => {
