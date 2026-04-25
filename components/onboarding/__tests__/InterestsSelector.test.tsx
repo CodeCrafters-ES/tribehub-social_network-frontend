@@ -87,9 +87,19 @@ describe('InterestsSelector', () => {
       render(<InterestsSelector />);
 
       await waitFor(() => {
-        expect(
-          screen.getByText('Error cargando intereses'),
-        ).toBeInTheDocument();
+        expect(screen.getByText('Opps algo ha salido mal')).toBeInTheDocument();
+      });
+    });
+
+    it('1.3.1 displays no data message when no interests are returned', async () => {
+      (listInterests as jest.Mock).mockResolvedValue([]);
+      (getMyInterests as jest.Mock).mockResolvedValue([]);
+      (listCategories as jest.Mock).mockResolvedValue(MOCK_CATEGORIES);
+
+      render(<InterestsSelector />);
+
+      await waitFor(() => {
+        expect(screen.getByText('Opps no hay datos')).toBeInTheDocument();
       });
     });
 

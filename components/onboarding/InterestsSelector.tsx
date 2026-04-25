@@ -11,9 +11,10 @@ import { groupInterests } from '@/lib/utils/groupInterests';
 import Chip from '@/shared/ui/Chip';
 import { useRouter } from 'next/navigation';
 import { Category, Interest } from '@/lib/types/interests';
-import { ArrowRight, Search } from 'lucide-react';
+import { ArrowRight, GlobeOff, Search, SearchX } from 'lucide-react';
 import Spinner from '../../shared/ui/Spinner';
 import Button from '@/shared/ui/Button';
+import GraphicLabel from '@/shared/ui/GraphicLabel';
 
 export default function InterestsSelector() {
   const router = useRouter();
@@ -23,6 +24,7 @@ export default function InterestsSelector() {
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [noData, setNoData] = useState(false);
   const [categoryFilter, setCategoryFilter] = useState<string>('Todos');
   const [categories, setCategories] = useState<Category[]>([]);
 
@@ -38,8 +40,11 @@ export default function InterestsSelector() {
         setInterests(all);
         setSelectedIds(mine);
         setCategories(cats);
+        if (all.length === 0) {
+          setNoData(true);
+        }
       } catch {
-        setError('Error cargando intereses');
+        setError('Opps algo ha salido mal');
       } finally {
         setLoading(false);
       }
@@ -64,6 +69,14 @@ export default function InterestsSelector() {
     return groupInterests(filtered);
   }, [interests, query, categoryFilter]);
 
+  const filtered = interests.filter((i) => {
+    const matchesQuery = i.name.toLowerCase().includes(query.toLowerCase());
+    const matchesCategory =
+      categoryFilter === 'Todos' || i.category === categoryFilter;
+    return matchesQuery && matchesCategory;
+  });
+  const hasResults = filtered.length > 0;
+
   async function handleSave() {
     if (selectedIds.length < 3) return;
 
@@ -84,11 +97,36 @@ export default function InterestsSelector() {
         <Spinner size={32} color="rose-900" data-testid="spinner" />
       </div>
     );
-  if (error) return <div>{error}</div>;
+  if (error)
+    return (
+      <div className="flex-1 flex flex-col items-center justify-center gap-6 p-6">
+        <GraphicLabel
+          icon={<GlobeOff size={48} />}
+          message={error}
+          className="text-slate-700"
+        />
+        <div className="w-full max-w-xs">
+          <Button onClick={() => router.refresh()}>Reintentar</Button>
+        </div>
+      </div>
+    );
+  if (noData)
+    return (
+      <div className="flex-1 flex flex-col items-center justify-center gap-6 p-6">
+        <GraphicLabel
+          icon={<SearchX size={48} />}
+          message="Opps no hay datos"
+          className="text-slate-600"
+        />
+        <div className="w-full max-w-xs">
+          <Button onClick={() => router.refresh()}>Reintentar</Button>
+        </div>
+      </div>
+    );
 
   return (
-    <div className="space-y-4 p-4">
-      <div className="relative w-full text-rose-900 focus-within:text-rose-900">
+    <div className="space-y-4 p-4 pb-32">
+      <div className="relative w-full text-slate-600 focus-within:text-slate-700">
         <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
           <Search size={20} strokeWidth={2.5} />
         </div>
@@ -98,7 +136,7 @@ export default function InterestsSelector() {
           placeholder="Buscar..."
           value={query}
           onChange={(e) => setQuery(e.target.value)}
-          className="w-full p-3 pl-10 rounded-lg bg-rose-100 placeholder-rose-900 text-gray-900 outline-none focus:ring-2 focus:ring-rose-200 transition-all"
+          className="w-full p-3 pl-10 rounded-lg bg-slate-100 placeholder-slate-500 text-slate-900 outline-none focus:ring-2 focus:ring-slate-300 transition-all"
         />
       </div>
 
@@ -124,6 +162,12 @@ export default function InterestsSelector() {
       <h2 className="text-2xl leading-relaxed sm:truncate sm:text-3xl sm:tracking-tight">
         Elige al menos 3 intereses para personalizar tu feed
       </h2>
+
+      {!hasResults && (
+        <div className="flex justify-center py-6">
+          <SearchX size={48} />
+        </div>
+      )}
 
       <div className="flex flex-wrap gap-2">
         {categories

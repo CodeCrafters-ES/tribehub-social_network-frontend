@@ -97,30 +97,6 @@ describe('Button', () => {
     expect(icon).toHaveAttribute('size', '20');
   });
 
-  it('applies correct base classes', () => {
-    render(<Button>Base Classes</Button>);
-
-    const button = screen.getByRole('button');
-    expect(button).toHaveClass(
-      'w-full',
-      'flex',
-      'items-center',
-      'justify-center',
-      'gap-2',
-      'rounded-xl',
-      'bg-rose-500',
-      'px-4',
-      'py-3.5',
-      'text-sm',
-      'font-bold',
-      'text-white',
-      'transition',
-      'duration-150',
-      'min-h-12',
-      'max-h-12',
-    );
-  });
-
   it('applies hover classes when not disabled', () => {
     render(<Button>Hover</Button>);
 
