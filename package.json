@@ -12,6 +12,8 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "check": "bun run typecheck && bun run lint",
+    "verify": "npm run typecheck && npm run lint && npm test -- --runInBand && npm run build",
+    "verify:full": "npm run verify && npx @lhci/cli@0.15.x autorun",
     "test": "jest",
     "test:watch": "jest --watch"
   },
