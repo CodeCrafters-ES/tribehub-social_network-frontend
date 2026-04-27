@@ -49,7 +49,7 @@ export default function LoginForm() {
 
   return (
     <form
-      className="w-full max-w-[420px] animate-[slide-up_320ms_ease-out] space-y-4 rounded-2xl border border-brand-border bg-brand-surface p-7 shadow-card"
+      className="w-full max-w-[420px] space-y-4 rounded-2xl border border-brand-border bg-brand-surface p-7 shadow-card"
       onSubmit={onSubmit}
       noValidate
     >

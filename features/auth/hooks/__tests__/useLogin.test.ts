@@ -14,6 +14,7 @@ jest.mock('../../client', () => ({
 // Import after mock registration so the hook picks up the mocked module.
 import { login as loginClient, LoginError } from '@/features/auth/client';
 import { useLogin } from '@/features/auth/hooks/useLogin';
+import type { LoginResult } from '@/features/auth/types';
 
 const mockLogin = loginClient as jest.MockedFunction<typeof loginClient>;
 
@@ -22,7 +23,9 @@ const mockLogin = loginClient as jest.MockedFunction<typeof loginClient>;
 // ---------------------------------------------------------------------------
 
 const payload = { email: 'user@example.com', password: 'secret123' };
-const successResult = { user: { id: 'u1', email: 'user@example.com' } };
+const successResult: LoginResult = {
+  user: { id: 'u1', email: 'user@example.com' },
+};
 
 // ---------------------------------------------------------------------------
 // Tests
@@ -48,7 +51,7 @@ describe('useLogin', () => {
 
       const { result } = renderHook(() => useLogin());
 
-      let returned: typeof successResult | undefined;
+      let returned: LoginResult | undefined;
       await act(async () => {
         returned = await result.current.login(payload);
       });
@@ -93,8 +96,8 @@ describe('useLogin', () => {
 
   describe('loading state', () => {
     it('sets isLoading to true while the call is in-flight', async () => {
-      let resolveFn!: (value: typeof successResult) => void;
-      const deferred = new Promise<typeof successResult>((resolve) => {
+      let resolveFn!: (value: LoginResult) => void;
+      const deferred = new Promise<LoginResult>((resolve) => {
         resolveFn = resolve;
       });
       mockLogin.mockReturnValueOnce(deferred);
