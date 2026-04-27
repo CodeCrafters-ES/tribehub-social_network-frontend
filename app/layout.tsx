@@ -1,5 +1,18 @@
 import type { Metadata, Viewport } from 'next';
+import { Sora, Space_Grotesk } from 'next/font/google';
 import './globals.css';
+
+const sora = Sora({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-sora',
+});
+
+const spaceGrotesk = Space_Grotesk({
+  subsets: ['latin'],
+  display: 'swap',
+  variable: '--font-space-grotesk',
+});
 
 export const viewport: Viewport = {
   width: 'device-width',
@@ -27,7 +40,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="es" suppressHydrationWarning>
+    <html
+      lang="es"
+      suppressHydrationWarning
+      className={`${sora.variable} ${spaceGrotesk.variable}`}
+    >
       <head>
         <meta charSet="utf-8" />
         <meta name="theme-color" content="#2c6e49" />
