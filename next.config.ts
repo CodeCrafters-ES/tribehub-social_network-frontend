@@ -115,7 +115,11 @@ const nextConfig: NextConfig = {
   },
   compress: true,
   experimental: {
-    optimizePackageImports: ['next/font/google'],
+    optimizePackageImports: [
+      'next/font/google',
+      'lucide-react',
+      'react-hook-form',
+    ],
   },
   turbopack: {
     resolveAlias: {

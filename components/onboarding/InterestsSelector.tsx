@@ -44,7 +44,7 @@ export default function InterestsSelector() {
           setNoData(true);
         }
       } catch {
-        setError('Opps algo ha salido mal');
+        setError('Oops algo ha salido mal');
       } finally {
         setLoading(false);
       }
@@ -58,23 +58,20 @@ export default function InterestsSelector() {
     );
   }
 
-  const grouped = useMemo(() => {
-    const filtered = interests.filter((i) => {
+  const { grouped, filtered } = useMemo(() => {
+    const filteredInterests = interests.filter((i) => {
       const matchesQuery = i.name.toLowerCase().includes(query.toLowerCase());
       const matchesCategory =
         categoryFilter === 'Todos' || i.category === categoryFilter;
       return matchesQuery && matchesCategory;
     });
 
-    return groupInterests(filtered);
+    return {
+      grouped: groupInterests(filteredInterests),
+      filtered: filteredInterests,
+    };
   }, [interests, query, categoryFilter]);
 
-  const filtered = interests.filter((i) => {
-    const matchesQuery = i.name.toLowerCase().includes(query.toLowerCase());
-    const matchesCategory =
-      categoryFilter === 'Todos' || i.category === categoryFilter;
-    return matchesQuery && matchesCategory;
-  });
   const hasResults = filtered.length > 0;
 
   async function handleSave() {
@@ -115,7 +112,7 @@ export default function InterestsSelector() {
       <div className="flex-1 flex flex-col items-center justify-center gap-6 p-6">
         <GraphicLabel
           icon={<SearchX size={48} />}
-          message="Opps no hay datos"
+          message="Oops no hay datos"
           className="text-slate-600"
         />
         <div className="w-full max-w-xs">

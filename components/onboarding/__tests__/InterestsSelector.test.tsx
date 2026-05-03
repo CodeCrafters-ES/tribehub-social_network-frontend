@@ -87,7 +87,7 @@ describe('InterestsSelector', () => {
       render(<InterestsSelector />);
 
       await waitFor(() => {
-        expect(screen.getByText('Opps algo ha salido mal')).toBeInTheDocument();
+        expect(screen.getByText('Oops algo ha salido mal')).toBeInTheDocument();
       });
     });
 
@@ -99,7 +99,7 @@ describe('InterestsSelector', () => {
       render(<InterestsSelector />);
 
       await waitFor(() => {
-        expect(screen.getByText('Opps no hay datos')).toBeInTheDocument();
+        expect(screen.getByText('Oops no hay datos')).toBeInTheDocument();
       });
     });
 
