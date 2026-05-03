@@ -16,8 +16,9 @@
     "test:watch": "jest --watch"
   },
   "dependencies": {
-    "@hookform/resolvers": "^5.2.2",
     "axios": "^1.14.0",
+    "lucide-react": "^1.7.0",
+    "@hookform/resolvers": "^5.2.2",
     "next": "16.2.1",
     "react": "19.2.4",
     "react-dom": "19.2.4",

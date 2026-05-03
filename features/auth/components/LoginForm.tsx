@@ -1,33 +1,64 @@
 'use client';
 
-import { zodResolver } from '@hookform/resolvers/zod';
+import { useState } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useForm } from 'react-hook-form';
 
-import { useLogin } from '@/features/auth/hooks/useLogin';
-import { loginSchema, type LoginFormValues } from '@/features/auth/schemas';
+import { login, LoginError } from '@/features/auth/client';
 import Button from '@/shared/ui/Button';
 import Input from '@/shared/ui/Input';
+
+type FormErrors = {
+  email?: string;
+  password?: string;
+};
 
 export default function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { login, isLoading, error: serverError, reset } = useLogin();
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isSubmitting },
-  } = useForm<LoginFormValues>({
-    resolver: zodResolver(loginSchema),
-  });
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+  const [errors, setErrors] = useState<FormErrors>({});
+  const [serverError, setServerError] = useState<string | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
-  const onSubmit = handleSubmit(async (values) => {
-    reset();
+  const validate = () => {
+    const nextErrors: FormErrors = {};
+
+    if (!email.trim()) {
+      nextErrors.email = 'Ingresa un email válido.';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      nextErrors.email = 'El email debe tener un formato válido.';
+    }
+
+    if (!password) {
+      nextErrors.password = 'Ingresa tu contraseña.';
+    }
+
+    setErrors(nextErrors);
+    return Object.keys(nextErrors).length === 0;
+  };
+
+  const handleChange = () => {
+    if (serverError) setServerError(null);
+    if (errors.email || errors.password) {
+      setErrors({});
+    }
+  };
+
+  const onSubmit = async (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    setServerError(null);
+
+    if (!validate()) {
+      return;
+    }
+
+    setIsLoading(true);
 
     try {
-      await login(values);
+      await login({ email, password });
 
       const nextPath = searchParams.get('next');
       const isAuthGroupPath =
@@ -42,10 +73,16 @@ export default function LoginForm() {
 
       router.replace(safePath);
       router.refresh();
-    } catch {
-      // Error state is set inside useLogin; no additional handling needed here.
+    } catch (err) {
+      if (err instanceof LoginError) {
+        setServerError(err.message);
+      } else {
+        setServerError('No fue posible iniciar sesión. Intenta más tarde.');
+      }
+    } finally {
+      setIsLoading(false);
     }
-  });
+  };
 
   return (
     <form
@@ -77,8 +114,12 @@ export default function LoginForm() {
         type="email"
         autoComplete="email"
         placeholder="user@example.com"
-        error={errors.email?.message}
-        {...register('email')}
+        value={email}
+        onChange={(event) => {
+          setEmail(event.target.value);
+          handleChange();
+        }}
+        error={errors.email}
       />
 
       <Input
@@ -87,11 +128,15 @@ export default function LoginForm() {
         type="password"
         autoComplete="current-password"
         placeholder="********"
-        error={errors.password?.message}
-        {...register('password')}
+        value={password}
+        onChange={(event) => {
+          setPassword(event.target.value);
+          handleChange();
+        }}
+        error={errors.password}
       />
 
-      <Button type="submit" isLoading={isSubmitting || isLoading}>
+      <Button type="submit" isLoading={isLoading}>
         Entrar
       </Button>
 
