@@ -12,14 +12,14 @@ describe('Profile API Service', () => {
     displayName: 'Test User',
     bio: 'Test bio',
     avatarUrl: 'https://example.com/avatar.jpg',
-    isPublic: true,
+    privacy_level: 'public',
   };
 
   const mockUpdatePayload: UpdateProfilePayload = {
     displayName: 'Updated Name',
     bio: 'Updated bio',
     avatarUrl: 'https://example.com/new-avatar.jpg',
-    isPublic: false,
+    privacy_level: 'private',
   };
 
   beforeEach(() => {

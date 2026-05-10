@@ -7,18 +7,33 @@
  * - avatarUrl: optional, must be valid URL
  */
 
+/**
+ * Privacy level returned by the backend. The MVP UI only surfaces
+ * `public` and `private`; `friends` is normalized to `private`.
+ */
+export type BackendPrivacyLevel = 'public' | 'private' | 'friends';
+export type UiPrivacyLevel = 'public' | 'private';
+
+export function normalizePrivacyLevel(
+  value: BackendPrivacyLevel | undefined | null,
+): UiPrivacyLevel {
+  return value === 'public' ? 'public' : 'private';
+}
+
 export interface ProfileResponse {
   id: string;
   userId: string;
   displayName: string;
   bio?: string;
   avatarUrl?: string;
+  privacy_level?: BackendPrivacyLevel;
 }
 
 export interface UpdateProfilePayload {
-  displayName: string;
+  displayName?: string;
   bio?: string;
   avatarUrl?: string;
+  privacy_level?: UiPrivacyLevel;
 }
 
 const getProfile = async (): Promise<ProfileResponse> => {

@@ -6,7 +6,9 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 import Button from '@/shared/ui/Button';
 import Input from '@/shared/ui/Input';
+import ProfileVisibilityToggle from '@/features/profile/components/ProfileVisibilityToggle';
 import {
+  type BackendPrivacyLevel,
   profileApi,
   ProfileResponse,
   UpdateProfilePayload,
@@ -42,6 +44,9 @@ export default function ProfilePage() {
   const router = useRouter();
   const [isLoading, setIsLoading] = useState(true);
   const [apiError, setApiError] = useState<string | null>(null);
+  const [initialPrivacyLevel, setInitialPrivacyLevel] = useState<
+    BackendPrivacyLevel | undefined
+  >(undefined);
 
   const {
     register,
@@ -72,6 +77,7 @@ export default function ProfilePage() {
           bio: data.bio ?? undefined,
           avatarUrl: data.avatarUrl ?? undefined,
         });
+        setInitialPrivacyLevel(data.privacy_level);
       })
       .catch((err: unknown) => {
         // 404 means new user - show empty form (normal, not an error)
@@ -196,6 +202,11 @@ export default function ProfilePage() {
             placeholder="https://ejemplo.com/avatar.jpg"
             error={errors.avatarUrl?.message}
             {...register('avatarUrl')}
+          />
+
+          <ProfileVisibilityToggle
+            initialPrivacyLevel={initialPrivacyLevel}
+            disabled={isSubmitting}
           />
 
           <Button type="submit" isLoading={isSubmitting} className="w-full">
