@@ -1,0 +1,18 @@
+name: Limpieza de Workflows
+
+on:
+  schedule:
+    - cron: '0 0 * * 0' # Se ejecuta cada domingo a medianoche
+  workflow_dispatch: # Permite ejecutarlo manualmente
+
+jobs:
+  delete-runs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Delete workflow runs
+        uses: Mattraiano/delete-workflow-runs@v2
+        with:
+          token: ${{ github.token }}
+          repository: ${{ github.repository }}
+          retain_days: 30
+          keep_minimum_runs: 6

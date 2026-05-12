@@ -1,0 +1,67 @@
+name: CI - Verificación de Código
+
+on:
+  pull_request:
+    branches: [main, develop]
+  push:
+    branches: [develop]
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout del código
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Instalar dependencias
+        run: npm ci
+
+      - name: Lint (Calidad de código)
+        run: npm run lint
+
+      - name: Run Jest tests
+        run: npm run test
+
+      - name: Cache Next.js build
+        uses: actions/cache@v4
+        with:
+          path: ${{ github.workspace }}/.next/cache
+          key: ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-${{ hashFiles('**/*.js', '**/*.jsx', '**/*.ts', '**/*.tsx') }}
+          restore-keys: |
+            ${{ runner.os }}-nextjs-${{ hashFiles('**/package-lock.json') }}-
+
+      # FUSIONADO: Un solo build que hace la validación y el análisis a la vez
+      - name: Build con Análisis de Bundle
+        run: npm run build
+        env:
+          ANALYZE: true
+          NEXT_TELEMETRY_DISABLED: 1
+
+  lighthouse:
+    runs-on: ubuntu-latest
+    needs: build-and-test
+    permissions:
+      statuses: write
+      checks: write
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - run: npm ci
+
+      # Generamos el build para que Lighthouse tenga algo que auditar
+      - run: npm run build
+
+      - name: Run Lighthouse
+        run: |
+          npm install -g @lhci/cli@0.13.x
+          lhci autorun
