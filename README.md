@@ -1,8 +1,11 @@
-# 🚀 Proyecto de red social (Social Network WebApp) - Frontend Team
+# 🚀 TribeHub — Frontend
 
-## Bienvenido/a al repositorio del proyecto **Social Network** en el que colabora el equipo **Frontend**
+## Bienvenido/a al repositorio del frontend de **TribeHub**, la red social comunitaria
 
-Este proyecto usa **NextJS**, **HTML** y **TailwindCSS** como base para un desarrollo rápido, modular y escalable.
+TribeHub es una aplicación web de red social moderna construida con **Next.js + TypeScript + Tailwind CSS**.
+Incluye funcionalidades como autenticación, publicaciones, comentarios, perfiles de usuario y feed social.
+
+<!-- ![Captura de Pantalla](./src/assets/screenshot.png)  Reemplazar con imagen real -->
 
 ---
 
@@ -10,42 +13,80 @@ Este proyecto usa **NextJS**, **HTML** y **TailwindCSS** como base para un desar
 [![NextJS](https://img.shields.io/badge/NextJS-16.2.1-orange)](https://nextjs.org/)
 [![Tailwind CSS](https://img.shields.io/badge/tailwindcss-%5E4-06B6D4)](https://tailwindcss.com/)
 
-Aplicación web de una red social moderna construida con **NextJS** y **Tailwind CSS**.
-Incluye funcionalidades como autenticación, publicaciones, comentarios y perfiles de usuario.
+## Deploy
 
-<!-- ![Captura de Pantalla](./src/assets/screenshot.png)  <!-- Reemplazar con imagen real -->
+[Producción](https://tribehub.app/)
 
----
-
-[![Sitio Web en Vivo](https://img.shields.io/badge/🌐-Visitar_Sitio-2EA44F)](https://turedsocial.com)  
-[![Demo](https://img.shields.io/badge/🎥-Ver_Demo-FF0000)](https://youtu.be/ejemplo-demo)
+[Preproducción](https://staging.tribehub.app/) (Próximamente)
 
 ---
 
-## 🔹 **Funcionalidades clave**
+## 🔹 **Funcionalidades — Hito 1 MVP Crítico** _(en construcción)_
 
-- Publica fotos, textos y enlaces.
-- Conecta con amigos.
-- Descubre comunidades temáticas.
-
----
-
-## 🤝 Contribución
-
-Para conocer las pautas detalladas de contribución, consulta el archivo [CONTRIBUTING.md](CONTRIBUTING.md).  
-_(Haz clic en el enlace para ir directamente a las guías)_
+- Autenticación: registro y login con confirmación de email (Supabase)
+- Onboarding: selección de intereses al crear la cuenta
+- Perfil público/privado con avatar
+- Posts de texto e imagen
+- Feed general con paginación por cursor
+- Búsqueda global con debounce
 
 ---
 
-## 🖥️ Cómo Usar la Aplicación
+## 🛠️ Stack técnico
 
-### Opción 1: Acceder Online (Recomendado)
+| Tecnología            | Versión | Rol                                |
+| --------------------- | ------- | ---------------------------------- |
+| Next.js (App Router)  | 16.2.1  | Framework SSR + routing            |
+| React                 | 19      | Capa de UI                         |
+| TypeScript            | —       | Tipado estático                    |
+| TanStack Query        | —       | Fetching y caché en cliente        |
+| Axios                 | —       | Cliente HTTP con interceptores     |
+| react-hook-form + zod | —       | Formularios y validación           |
+| Tailwind CSS          | v4      | Estilos (sin `tailwind.config.js`) |
+| bun                   | —       | Package manager y runner           |
+| Netlify               | —       | Deploy objetivo (preview por PR)   |
 
-Simplemente visita **[https://tribehub.app](https://tribehub.app)** en tu navegador (Chrome, Firefox o Edge).
+---
 
-### Opción 2: Ejecutar Localmente (Para Testing)
+## 📁 Estructura del proyecto (Feature-Sliced Design)
 
-Si quieres probar la app en tu máquina:
+```
+app/                      # Rutas, layouts y boundaries (loading/error)
+  (auth)/                 # Rutas públicas: /login, /register
+  (app)/                  # Zona autenticada: /feed, /profile/[id], ...
+
+features/                 # Lógica de dominio aislada por feature
+  auth/                   # Componentes, hooks y tipos de autenticación
+  profile/                # Perfil de usuario
+  interests/              # Onboarding de intereses
+  posts/                  # Creación y detalle de posts
+  feed/                   # Feed general
+  search/                 # Búsqueda global
+
+shared/                   # Código reutilizable sin lógica de dominio
+  ui/                     # Componentes base: Button, Input, Modal, Card, Avatar...
+  lib/                    # Helpers, formatters, constantes
+  hooks/                  # Hooks genéricos: useDebounce, useMediaQuery...
+  types/                  # Tipos compartidos entre dominios
+
+services/
+  api/                    # Instancia Axios, interceptores, manejo de errores
+  server/                 # Wrapper fetch tipado para Server Components
+```
+
+**Regla de aislamiento:** un feature no puede importar de otro feature — solo de `shared/*` y `services/*`.
+
+---
+
+## ✅ Prerequisitos
+
+- **Node.js** 20 o superior
+- **bun** instalado ([instrucciones](https://bun.sh/))
+- **Backend de TribeHub** corriendo en `http://localhost:3000` (ver `tribehub-social_network-backend/`)
+
+---
+
+## 🖥️ Cómo ejecutar localmente
 
 1. **Clona el repositorio**:
 
@@ -71,13 +112,7 @@ bun install
 Copia el archivo de ejemplo y ajusta los valores según tu entorno:
 
 ```bash
-cp .env.example .env
-```
-
-El archivo `.env` contiene la URL del backend de autenticación (login y registro):
-
-```
-AUTH_API_BASE_URL=http://localhost:8080
+cp .env.example .env.local
 ```
 
 5. **Levanta el servidor de desarrollo**:
@@ -86,14 +121,45 @@ AUTH_API_BASE_URL=http://localhost:8080
 bun run dev
 ```
 
-La aplicación estará disponible en [http://localhost:3000](http://localhost:3000).
+La aplicación estará disponible en [http://localhost:5173](http://localhost:5173).
 
 Las rutas de autenticación disponibles son:
 
 - `/login` — Inicio de sesión
 - `/register` — Registro de usuario
 
-⚠️ _Nota_: Para que el login y registro funcionen correctamente, el backend de autenticación debe estar corriendo en la URL configurada en `AUTH_API_BASE_URL`.
+⚠️ _Nota_: Para que el login y registro funcionen correctamente, el backend de TribeHub debe estar corriendo en `http://localhost:3000`.
+
+---
+
+## 🔑 Variables de entorno
+
+Crea un archivo `.env.local` en la raíz del proyecto con el siguiente contenido:
+
+```env
+# URL base de la API del backend (incluye el prefijo /api/v1)
+NEXT_PUBLIC_API_BASE_URL=http://localhost:3000/api/v1
+```
+
+> Las variables con prefijo `NEXT_PUBLIC_` son expuestas al cliente. Las variables sin ese prefijo solo están disponibles en el servidor.
+
+---
+
+## 📟 Comandos disponibles
+
+```bash
+bun run dev        # Servidor de desarrollo (puerto 5173)
+bun run build      # Build de producción
+bun run start      # Inicia el build de producción
+bun run lint       # Análisis de código con ESLint
+```
+
+---
+
+## 🤝 Contribución
+
+Para conocer las pautas detalladas de contribución, consulta el archivo [CONTRIBUTING.md](CONTRIBUTING.md).  
+_(Haz clic en el enlace para ir directamente a las guías)_
 
 ---
 
@@ -106,11 +172,12 @@ Las rutas de autenticación disponibles son:
 
 ## 🆘 Soporte Técnico
 
-¿Problemas al acceder?
+¿Problemas al ejecutar el proyecto?
 
-- Verifica tu conexión a Internet.
+- Verifica que el backend esté corriendo en `http://localhost:3000`.
+- Verifica tu archivo `.env.local` y que las variables estén correctamente definidas.
 - Limpia la caché del navegador.
-- Contáctanos <!--en [soporte@turedsocial.com](mailto:soporte@turedsocial.com). -->
+- Contáctanos abriendo un issue en el repositorio.
 
 ---
 

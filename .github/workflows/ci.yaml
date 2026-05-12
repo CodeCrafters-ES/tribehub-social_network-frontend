@@ -46,6 +46,9 @@ jobs:
   lighthouse:
     runs-on: ubuntu-latest
     needs: build-and-test
+    permissions:
+      statuses: write
+      checks: write
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -62,5 +65,3 @@ jobs:
         run: |
           npm install -g @lhci/cli@0.13.x
           lhci autorun
-        env:
-          LHCI_GITHUB_APP_TOKEN: ${{ secrets.GITHUB_TOKEN }}
