@@ -3,10 +3,9 @@
 import { zodResolver } from '@hookform/resolvers/zod';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { useState } from 'react';
 import { useForm } from 'react-hook-form';
 
-import { login, LoginError } from '@/features/auth/client';
+import { useLogin } from '@/features/auth/hooks/useLogin';
 import { loginSchema, type LoginFormValues } from '@/features/auth/schemas';
 import Button from '@/shared/ui/Button';
 import Input from '@/shared/ui/Input';
@@ -14,7 +13,7 @@ import Input from '@/shared/ui/Input';
 export default function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
-  const [serverError, setServerError] = useState<string | null>(null);
+  const { login, isLoading, error: serverError, reset } = useLogin();
 
   const {
     register,
@@ -25,7 +24,7 @@ export default function LoginForm() {
   });
 
   const onSubmit = handleSubmit(async (values) => {
-    setServerError(null);
+    reset();
 
     try {
       await login(values);
@@ -43,12 +42,8 @@ export default function LoginForm() {
 
       router.replace(safePath);
       router.refresh();
-    } catch (error) {
-      if (error instanceof LoginError) {
-        setServerError(error.message);
-      } else {
-        setServerError('No fue posible iniciar sesión. Intenta más tarde.');
-      }
+    } catch {
+      // Error state is set inside useLogin; no additional handling needed here.
     }
   });
 
@@ -96,7 +91,7 @@ export default function LoginForm() {
         {...register('password')}
       />
 
-      <Button type="submit" isLoading={isSubmitting}>
+      <Button type="submit" isLoading={isSubmitting || isLoading}>
         Entrar
       </Button>
 
