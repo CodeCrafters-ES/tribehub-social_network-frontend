@@ -51,7 +51,16 @@ export async function GET() {
       );
     }
 
-    const data = await response.json();
+    let data;
+    try {
+      data = await response.json();
+    } catch {
+      // Backend devolvió JSON inválido
+      return NextResponse.json(
+        { message: 'Invalid response from backend' },
+        { status: 502 },
+      );
+    }
     return NextResponse.json(data, { status: 200 });
   } catch (_error) {
     // Error de red, no necesitamos usar la variable
@@ -104,7 +113,16 @@ export async function PATCH(request: Request) {
       );
     }
 
-    const data = await response.json();
+    let data;
+    try {
+      data = await response.json();
+    } catch {
+      // Backend devolvió JSON inválido
+      return NextResponse.json(
+        { message: 'Invalid response from backend' },
+        { status: 502 },
+      );
+    }
     return NextResponse.json(data, { status: 200 });
   } catch (_error) {
     // Error de red, no necesitamos usar la variable
