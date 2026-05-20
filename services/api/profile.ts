@@ -1,66 +1,62 @@
 /**
- * Profile API service — uses BFF route internally (/api/v1/profile).
+ * Profile API service — usa el BFF route internamente (/api/v1/profile).
  *
- * IMPORTANT: Types must match backend DTO (src/modules/profile/dto/update-profile.dto.ts)
- * - displayName: required, 2-50 chars
- * - bio: optional, max 160 chars
- * - avatarUrl: optional, must be valid URL
+ * IMPORTANTE: Los tipos de dominio viven en features/profile/types
+ * para cumplir con la arquitectura FSD.
+ * Este archivo solo contiene la implementación del cliente HTTP.
+ *
+ * Los tipos deben coincidir con el DTO del backend
+ * (src/modules/profile/dto/update-profile.dto.ts)
  */
 
-export interface ProfileResponse {
-  id: string;
-  userId: string;
-  displayName: string;
-  bio?: string;
-  avatarUrl?: string;
-}
+import { apiClient } from './apiClient';
+import type {
+  ProfileResponse,
+  UpdateProfilePayload,
+} from '@/features/profile/types';
 
-export interface UpdateProfilePayload {
-  displayName: string;
-  bio?: string;
-  avatarUrl?: string;
-}
-
+/**
+ * Obtiene el perfil del usuario autenticado.
+ * GET /api/v1/profile -> BFF -> Backend /v1/profile/me
+ */
 const getProfile = async (): Promise<ProfileResponse> => {
-  const response = await fetch('/api/v1/profile', {
-    method: 'GET',
-    credentials: 'same-origin',
-  });
-
-  const status = response.status;
-
-  if (!response.ok) {
-    const error = new Error('Failed to fetch profile') as Error & {
+  try {
+    const response = await apiClient.get<ProfileResponse>('/api/v1/profile');
+    return response.data;
+  } catch (error) {
+    // Re-lanzar con status para que el componente maneje el error
+    const err = error as { response?: { status?: number } };
+    const apiError = new Error('Error al obtener el perfil') as Error & {
       status?: number;
     };
-    error.status = status;
-    throw error;
+    apiError.status = err.response?.status;
+    throw apiError;
   }
-
-  return response.json();
 };
 
+/**
+ * Actualiza el perfil del usuario autenticado.
+ * PATCH /api/v1/profile -> BFF -> Backend /v1/profile/me
+ *
+ * @param payload - Datos a actualizar (displayName requerido, bio/avatarUrl opcionales)
+ */
 const updateProfile = async (
   payload: UpdateProfilePayload,
 ): Promise<ProfileResponse> => {
-  const response = await fetch('/api/v1/profile', {
-    method: 'PATCH',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    body: JSON.stringify(payload),
-    credentials: 'same-origin',
-  });
-
-  if (!response.ok) {
-    const error = new Error('Failed to update profile') as Error & {
+  try {
+    const response = await apiClient.patch<ProfileResponse>(
+      '/api/v1/profile',
+      payload,
+    );
+    return response.data;
+  } catch (error) {
+    const err = error as { response?: { status?: number } };
+    const apiError = new Error('Error al actualizar el perfil') as Error & {
       status?: number;
     };
-    error.status = response.status;
-    throw error;
+    apiError.status = err.response?.status;
+    throw apiError;
   }
-
-  return response.json();
 };
 
 export const profileApi = {

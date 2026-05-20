@@ -1,9 +1,23 @@
-// Mock fetch globally
-const mockFetch = jest.fn();
-global.fetch = mockFetch;
+/**
+ * Tests del servicio de API de perfil.
+ *
+ * IMPORTANTE: El servicio ahora usa Axios (apiClient) en lugar de fetch nativo.
+ * Esto permite que los interceptores de refresh token funcionen correctamente.
+ */
+
+// Mock del apiClient de Axios
+const mockAxiosGet = jest.fn();
+const mockAxiosPatch = jest.fn();
+
+jest.mock('../apiClient', () => ({
+  apiClient: {
+    get: (...args: unknown[]) => mockAxiosGet(...args),
+    patch: (...args: unknown[]) => mockAxiosPatch(...args),
+  },
+}));
 
 import { profileApi, getProfile, updateProfile } from '../profile';
-import type { ProfileResponse, UpdateProfilePayload } from '../profile';
+import type { ProfileResponse, UpdateProfilePayload } from '@/features/profile/types';
 
 describe('Profile API Service', () => {
   const mockProfileData: ProfileResponse = {
@@ -12,14 +26,12 @@ describe('Profile API Service', () => {
     displayName: 'Test User',
     bio: 'Test bio',
     avatarUrl: 'https://example.com/avatar.jpg',
-    isPublic: true,
   };
 
   const mockUpdatePayload: UpdateProfilePayload = {
     displayName: 'Updated Name',
     bio: 'Updated bio',
     avatarUrl: 'https://example.com/new-avatar.jpg',
-    isPublic: false,
   };
 
   beforeEach(() => {
@@ -27,97 +39,71 @@ describe('Profile API Service', () => {
   });
 
   describe('getProfile', () => {
-    it('should call /api/v1/profile and return profile data', async () => {
-      mockFetch.mockResolvedValueOnce({
-        ok: true,
-        status: 200,
-        json: async () => mockProfileData,
-      } as Response);
+    it('debe llamar a /api/v1/profile y retornar los datos del perfil', async () => {
+      mockAxiosGet.mockResolvedValueOnce({ data: mockProfileData });
 
       const result = await getProfile();
 
-      expect(mockFetch).toHaveBeenCalledTimes(1);
-      expect(mockFetch).toHaveBeenCalledWith('/api/v1/profile', {
-        method: 'GET',
-        credentials: 'same-origin',
-      });
+      expect(mockAxiosGet).toHaveBeenCalledTimes(1);
+      expect(mockAxiosGet).toHaveBeenCalledWith('/api/v1/profile');
       expect(result).toEqual(mockProfileData);
     });
 
-    it('should throw error with status when response is not ok', async () => {
-      mockFetch.mockResolvedValueOnce({
-        ok: false,
-        status: 500,
-      } as Response);
+    it('debe lanzar error con status cuando la respuesta no es exitosa', async () => {
+      mockAxiosGet.mockRejectedValueOnce({
+        response: { status: 500 },
+      });
 
       await expect(getProfile()).rejects.toThrow();
     });
   });
 
   describe('updateProfile', () => {
-    it('should call /api/v1/profile with PATCH and return updated data', async () => {
-      mockFetch.mockResolvedValueOnce({
-        ok: true,
-        status: 200,
-        json: async () => mockProfileData,
-      } as Response);
+    it('debe llamar a /api/v1/profile con PATCH y retornar los datos actualizados', async () => {
+      mockAxiosPatch.mockResolvedValueOnce({ data: mockProfileData });
 
       const result = await updateProfile(mockUpdatePayload);
 
-      expect(mockFetch).toHaveBeenCalledTimes(1);
-      expect(mockFetch).toHaveBeenCalledWith('/api/v1/profile', {
-        method: 'PATCH',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(mockUpdatePayload),
-        credentials: 'same-origin',
-      });
+      expect(mockAxiosPatch).toHaveBeenCalledTimes(1);
+      expect(mockAxiosPatch).toHaveBeenCalledWith(
+        '/api/v1/profile',
+        mockUpdatePayload,
+      );
       expect(result).toEqual(mockProfileData);
     });
 
-    it('should throw error with status when response is not ok', async () => {
-      mockFetch.mockResolvedValueOnce({
-        ok: false,
-        status: 400,
-      } as Response);
+    it('debe lanzar error con status cuando la respuesta no es exitosa', async () => {
+      mockAxiosPatch.mockRejectedValueOnce({
+        response: { status: 400 },
+      });
 
       await expect(updateProfile(mockUpdatePayload)).rejects.toThrow();
     });
   });
 
   describe('profileApi object', () => {
-    it('should have getProfile and updateProfile methods', () => {
+    it('debe tener los métodos getProfile y updateProfile', () => {
       expect(typeof profileApi.getProfile).toBe('function');
       expect(typeof profileApi.updateProfile).toBe('function');
     });
 
-    it('getProfile should delegate to the getProfile function', async () => {
-      mockFetch.mockResolvedValueOnce({
-        ok: true,
-        status: 200,
-        json: async () => mockProfileData,
-      } as Response);
+    it('getProfile debe delegar a la función getProfile', async () => {
+      mockAxiosGet.mockResolvedValueOnce({ data: mockProfileData });
 
       const result = await profileApi.getProfile();
 
-      expect(mockFetch).toHaveBeenCalledWith(
-        '/api/v1/profile',
-        expect.any(Object),
-      );
+      expect(mockAxiosGet).toHaveBeenCalledWith('/api/v1/profile');
       expect(result).toEqual(mockProfileData);
     });
 
-    it('updateProfile should delegate to the updateProfile function', async () => {
-      mockFetch.mockResolvedValueOnce({
-        ok: true,
-        status: 200,
-        json: async () => mockProfileData,
-      } as Response);
+    it('updateProfile debe delegar a la función updateProfile', async () => {
+      mockAxiosPatch.mockResolvedValueOnce({ data: mockProfileData });
 
       const result = await profileApi.updateProfile(mockUpdatePayload);
 
-      expect(mockFetch).toHaveBeenCalledWith(
+      expect(mockAxiosPatch).toHaveBeenCalledWith(
         '/api/v1/profile',
-        expect.any(Object),
+        mockUpdatePayload,
       );
       expect(result).toEqual(mockProfileData);
     });

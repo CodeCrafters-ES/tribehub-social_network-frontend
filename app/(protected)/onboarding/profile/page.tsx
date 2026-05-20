@@ -6,11 +6,8 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 import Button from '@/shared/ui/Button';
 import Input from '@/shared/ui/Input';
-import {
-  profileApi,
-  ProfileResponse,
-  UpdateProfilePayload,
-} from '@/services/api/profile';
+import { profileApi } from '@/services/api/profile';
+import type { ProfileResponse, UpdateProfilePayload } from '@/features/profile/types';
 import { profileSchema, type ProfileFormValues } from './schema';
 
 // Constants
@@ -126,7 +123,11 @@ export default function ProfilePage() {
         </div>
 
         {apiError && (
-          <div className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-600 dark:border-red-800 dark:bg-red-900/20 dark:text-red-400">
+          <div
+            role="alert"
+            aria-live="polite"
+            className="rounded-lg border border-red-200 bg-red-50 p-3 text-sm text-red-600 dark:border-red-800 dark:bg-red-900/20 dark:text-red-400"
+          >
             {apiError}
           </div>
         )}
