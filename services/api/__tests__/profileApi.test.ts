@@ -39,13 +39,13 @@ describe('Profile API Service', () => {
   });
 
   describe('getProfile', () => {
-    it('debe llamar a /api/v1/profile y retornar los datos del perfil', async () => {
+    it('debe llamar a /profile y retornar los datos del perfil', async () => {
       mockAxiosGet.mockResolvedValueOnce({ data: mockProfileData });
 
       const result = await getProfile();
 
       expect(mockAxiosGet).toHaveBeenCalledTimes(1);
-      expect(mockAxiosGet).toHaveBeenCalledWith('/api/v1/profile');
+      expect(mockAxiosGet).toHaveBeenCalledWith('/profile');
       expect(result).toEqual(mockProfileData);
     });
 
@@ -59,14 +59,14 @@ describe('Profile API Service', () => {
   });
 
   describe('updateProfile', () => {
-    it('debe llamar a /api/v1/profile con PATCH y retornar los datos actualizados', async () => {
+    it('debe llamar a /profile con PATCH y retornar los datos actualizados', async () => {
       mockAxiosPatch.mockResolvedValueOnce({ data: mockProfileData });
 
       const result = await updateProfile(mockUpdatePayload);
 
       expect(mockAxiosPatch).toHaveBeenCalledTimes(1);
       expect(mockAxiosPatch).toHaveBeenCalledWith(
-        '/api/v1/profile',
+        '/profile',
         mockUpdatePayload,
       );
       expect(result).toEqual(mockProfileData);
@@ -92,7 +92,7 @@ describe('Profile API Service', () => {
 
       const result = await profileApi.getProfile();
 
-      expect(mockAxiosGet).toHaveBeenCalledWith('/api/v1/profile');
+      expect(mockAxiosGet).toHaveBeenCalledWith('/profile');
       expect(result).toEqual(mockProfileData);
     });
 
@@ -102,7 +102,7 @@ describe('Profile API Service', () => {
       const result = await profileApi.updateProfile(mockUpdatePayload);
 
       expect(mockAxiosPatch).toHaveBeenCalledWith(
-        '/api/v1/profile',
+        '/profile',
         mockUpdatePayload,
       );
       expect(result).toEqual(mockProfileData);

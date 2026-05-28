@@ -1,5 +1,9 @@
 /**
- * Profile API service — usa el BFF route internamente (/api/v1/profile).
+ * Profile API service — usa el BFF route internamente.
+ *
+ * Los paths son relativos a la baseURL del apiClient (http://host/api/v1).
+ * Convención del codebase: usar paths relativos (/profile, /auth/refresh)
+ * en lugar de paths absolutos (/api/v1/profile) para respetar la baseURL.
  *
  * IMPORTANTE: Los tipos de dominio viven en features/profile/types
  * para cumplir con la arquitectura FSD.
@@ -17,11 +21,11 @@ import type {
 
 /**
  * Obtiene el perfil del usuario autenticado.
- * GET /api/v1/profile -> BFF -> Backend /v1/profile/me
+ * GET /profile -> BFF (/api/v1/profile) -> Backend /v1/profile/me
  */
 const getProfile = async (): Promise<ProfileResponse> => {
   try {
-    const response = await apiClient.get<ProfileResponse>('/api/v1/profile');
+    const response = await apiClient.get<ProfileResponse>('/profile');
     return response.data;
   } catch (error) {
     // Re-lanzar con status para que el componente maneje el error
@@ -36,7 +40,7 @@ const getProfile = async (): Promise<ProfileResponse> => {
 
 /**
  * Actualiza el perfil del usuario autenticado.
- * PATCH /api/v1/profile -> BFF -> Backend /v1/profile/me
+ * PATCH /profile -> BFF (/api/v1/profile) -> Backend /v1/profile/me
  *
  * @param payload - Datos a actualizar (displayName requerido, bio/avatarUrl opcionales)
  */
@@ -45,7 +49,7 @@ const updateProfile = async (
 ): Promise<ProfileResponse> => {
   try {
     const response = await apiClient.patch<ProfileResponse>(
-      '/api/v1/profile',
+      '/profile',
       payload,
     );
     return response.data;

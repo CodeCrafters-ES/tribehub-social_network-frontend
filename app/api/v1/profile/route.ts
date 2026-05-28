@@ -6,6 +6,11 @@
  * 1. Lee la cookie tribehub_session del request
  * 2. La envía como Authorization: Bearer al backend
  * 3. Reenvía la respuesta
+ *
+ * NOTA DE PRECEDENCIA: Este Route Handler tiene prioridad sobre el rewrite
+ * genérico en next.config.ts que apunta `/api/:path*` al backend. Next.js
+ * siempre sirve los Route Handlers antes que los rewrites. Esto es correcto
+ * y necesario porque este handler transforma la cookie en header Bearer.
  */
 import { NextResponse } from 'next/server';
 
