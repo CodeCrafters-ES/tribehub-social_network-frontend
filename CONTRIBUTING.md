@@ -41,6 +41,17 @@ cp .env.example .env.local
 bun run dev   # http://localhost:3000
 ```
 
+### Dependencias principales del stack
+
+`bun install` instala todas las dependencias declaradas en `package.json`. Las más relevantes para el desarrollo de features son:
+
+| Paquete | Uso |
+| --- | --- |
+| `@tanstack/react-query` + `@tanstack/react-query-devtools` | Fetching y mutaciones en Client Components |
+| `axios` | Cliente HTTP; no crear instancias ad-hoc — usar `services/api/client.ts` |
+| `react-hook-form` + `@hookform/resolvers` | Formularios |
+| `zod` | Validación de esquemas de formularios y datos de API |
+
 ---
 
 ## 3. Comandos disponibles
