@@ -99,7 +99,12 @@ axiosInstance.interceptors.response.use(
 
     // Only intercept 401s that have not already been retried and are not the
     // refresh endpoint itself (to avoid infinite loops).
-    if (status === 401 && originalRequest && !originalRequest._retry && !isRefreshEndpoint) {
+    if (
+      status === 401 &&
+      originalRequest &&
+      !originalRequest._retry &&
+      !isRefreshEndpoint
+    ) {
       if (isRefreshing) {
         // Queue this request — it will be retried after the in-flight refresh
         // resolves (or rejected if the refresh fails).
