@@ -1,6 +1,8 @@
+import { Suspense } from 'react';
 import { redirect } from 'next/navigation';
 
 import LoginForm from '@/features/auth/components/LoginForm';
+import LoginLoading from './loading';
 import { isAuthenticated } from '@/features/auth/server-session';
 
 export default async function LoginPage() {
@@ -12,7 +14,9 @@ export default async function LoginPage() {
 
   return (
     <main className="grid min-h-screen place-items-center px-6 py-8">
-      <LoginForm />
+      <Suspense fallback={<LoginLoading />}>
+        <LoginForm />
+      </Suspense>
     </main>
   );
 }
