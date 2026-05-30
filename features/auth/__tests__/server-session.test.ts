@@ -10,6 +10,11 @@ import { isAuthenticated, isTokenValid } from '@/features/auth/server-session';
 // ---------------------------------------------------------------------------
 // Web API shims required for server-side modules running in jsdom
 // jsdom does not expose TextEncoder or crypto.subtle.
+//
+// Note on btoa/atob: these globals are available natively in Node.js 16+ and
+// in the Next.js runtime (Edge and Node), so no shim is needed here.
+// If tests are ever run on Node.js < 16, btoa/atob would need to be shimmed
+// similarly to TextEncoder below.
 // ---------------------------------------------------------------------------
 
 import { TextEncoder as NodeTextEncoder } from 'util';
@@ -84,6 +89,11 @@ describe('isTokenValid()', () => {
 
   it('returns false for a malformed token (no dots)', async () => {
     const result = await isTokenValid('notavalidtoken');
+    expect(result).toBe(false);
+  });
+
+  it('returns false for a malformed token (two parts, missing signature)', async () => {
+    const result = await isTokenValid('header.payload');
     expect(result).toBe(false);
   });
 
