@@ -2,11 +2,19 @@ import MockAdapter from 'axios-mock-adapter';
 import { axiosInstance } from '../axios';
 
 describe('XSRF-TOKEN header injection', () => {
+  const originalCookieDescriptor = Object.getOwnPropertyDescriptor(document, 'cookie');
+
   beforeEach(() => {
     Object.defineProperty(document, 'cookie', {
       writable: true,
       value: '',
     });
+  });
+
+  afterAll(() => {
+    if (originalCookieDescriptor) {
+      Object.defineProperty(document, 'cookie', originalCookieDescriptor);
+    }
   });
 
   it('injects x-xsrf-token header when XSRF-TOKEN cookie is present', async () => {
