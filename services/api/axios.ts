@@ -15,9 +15,9 @@ import axios, {
 } from 'axios';
 import { normalizeError } from './normalizeError';
 import {
-  isRefreshing,
+  getIsRefreshing,
   setRefreshing,
-  pendingQueue,
+  enqueuePending,
   processPendingQueue,
 } from './refreshQueue';
 
@@ -107,11 +107,11 @@ axiosInstance.interceptors.response.use(
       !originalRequest._retry &&
       !isRefreshEndpoint
     ) {
-      if (isRefreshing) {
+      if (getIsRefreshing()) {
         // Queue this request — it will be retried after the in-flight refresh
         // resolves (or rejected if the refresh fails).
         return new Promise<unknown>((resolve, reject) => {
-          pendingQueue.push({
+          enqueuePending({
             resolve: () => resolve(axiosInstance(originalRequest)),
             reject,
           });
