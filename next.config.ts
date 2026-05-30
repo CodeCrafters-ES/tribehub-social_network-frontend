@@ -49,6 +49,13 @@ const nextConfig: NextConfig = {
           source: '/api/v1/auth/refresh',
           destination: '/api/auth/refresh',
         },
+        // BFF: me — handled by app/api/auth/me/route.ts
+        // Client-side hooks may call GET /api/v1/auth/me to revalidate the session.
+        // Must reach the BFF (not NestJS) because session state lives in httpOnly cookies.
+        {
+          source: '/api/v1/auth/me',
+          destination: '/api/auth/me',
+        },
       ],
       afterFiles: [
         // Generic proxy: all other /api/v1/* requests → NestJS backend.
