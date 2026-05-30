@@ -61,11 +61,13 @@ export async function POST(request: NextRequest) {
 
   try {
     // Reenviar al backend NestJS con el nombre de cookie que éste espera.
+    const xsrfToken = request.headers.get('x-xsrf-token');
     const backendResponse = await fetch(`${baseUrl}/auth/refresh`, {
       method: 'POST',
       headers: {
         Cookie: `${BACKEND_REFRESH_COOKIE}=${encodeURIComponent(refreshToken)}`,
         'Content-Type': 'application/json',
+        ...(xsrfToken ? { 'x-xsrf-token': xsrfToken } : {}),
       },
       cache: 'no-store',
     });

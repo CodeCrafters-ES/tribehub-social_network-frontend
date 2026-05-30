@@ -4,6 +4,7 @@
  *  - withCredentials: true (httpOnly cookie refresh token strategy)
  *  - 10 s timeout
  *  - X-Request-Id header injected on every request
+ *  - x-xsrf-token header injected from XSRF-TOKEN cookie when present
  *  - 401 → refresh → retry (thundering herd prevention)
  *  - Error normalization via normalizeError()
  */
@@ -13,6 +14,12 @@ import axios, {
   type InternalAxiosRequestConfig,
 } from 'axios';
 import { normalizeError } from './normalizeError';
+import {
+  getIsRefreshing,
+  setRefreshing,
+  enqueuePending,
+  processPendingQueue,
+} from './refreshQueue';
 
 // ---------------------------------------------------------------------------
 // Internal types
@@ -43,7 +50,19 @@ export const axiosInstance: AxiosInstance = axios.create({
 });
 
 // ---------------------------------------------------------------------------
-// Request interceptor — attach X-Request-Id
+// Helpers
+// ---------------------------------------------------------------------------
+
+function getCookieValue(name: string): string | undefined {
+  if (typeof document === 'undefined') return undefined;
+  const match = document.cookie
+    .split('; ')
+    .find((row) => row.startsWith(`${name}=`));
+  return match ? decodeURIComponent(match.split('=')[1]) : undefined;
+}
+
+// ---------------------------------------------------------------------------
+// Request interceptor — attach X-Request-Id and x-xsrf-token
 // ---------------------------------------------------------------------------
 
 axiosInstance.interceptors.request.use(
@@ -55,33 +74,16 @@ axiosInstance.interceptors.request.use(
         : `${Date.now()}-${Math.random().toString(36).slice(2)}`;
 
     config.headers.set('X-Request-Id', requestId);
+
+    const xsrfToken = getCookieValue('XSRF-TOKEN');
+    if (xsrfToken) {
+      config.headers.set('x-xsrf-token', xsrfToken);
+    }
+
     return config;
   },
   (error: unknown) => Promise.reject(error),
 );
-
-// ---------------------------------------------------------------------------
-// Token refresh state — shared across all pending 401 responses
-// ---------------------------------------------------------------------------
-
-let isRefreshing = false;
-// Each resolve callback will be called with the new access token (or undefined
-// when it is stored in a cookie — in that case callers just retry).
-let pendingQueue: Array<{
-  resolve: (value?: string) => void;
-  reject: (reason: unknown) => void;
-}> = [];
-
-function processPendingQueue(error: unknown, token?: string): void {
-  pendingQueue.forEach(({ resolve, reject }) => {
-    if (error) {
-      reject(error);
-    } else {
-      resolve(token);
-    }
-  });
-  pendingQueue = [];
-}
 
 // ---------------------------------------------------------------------------
 // Response interceptor — 401 → refresh → retry + error normalization
@@ -105,11 +107,11 @@ axiosInstance.interceptors.response.use(
       !originalRequest._retry &&
       !isRefreshEndpoint
     ) {
-      if (isRefreshing) {
+      if (getIsRefreshing()) {
         // Queue this request — it will be retried after the in-flight refresh
         // resolves (or rejected if the refresh fails).
         return new Promise<unknown>((resolve, reject) => {
-          pendingQueue.push({
+          enqueuePending({
             resolve: () => resolve(axiosInstance(originalRequest)),
             reject,
           });
@@ -117,7 +119,7 @@ axiosInstance.interceptors.response.use(
       }
 
       originalRequest._retry = true;
-      isRefreshing = true;
+      setRefreshing(true);
 
       try {
         // POST /auth/refresh relies on the httpOnly cookie being sent via
@@ -125,13 +127,13 @@ axiosInstance.interceptors.response.use(
         await axiosInstance.post('/auth/refresh');
 
         processPendingQueue(null);
-        isRefreshing = false;
+        setRefreshing(false);
 
         // Retry the original failed request
         return await axiosInstance(originalRequest);
       } catch (refreshError) {
         processPendingQueue(refreshError);
-        isRefreshing = false;
+        setRefreshing(false);
 
         // Clear any client-side session state and redirect to login.
         // We use window.location to ensure a hard redirect that resets
